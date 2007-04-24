@@ -30,30 +30,8 @@
 #include "libmodest-dbus-client.h"
 #include <dbus_api/modest-dbus-api.h> /* For the API strings. */
 
-
 gboolean
-libmodest_dbus_client_call_helloworld(osso_context_t *osso_context)
-{
-	osso_rpc_t retval;
-	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
-		   MODEST_DBUS_NAME, 
-		   MODEST_DBUS_EXAMPLE_MESSAGE, &retval, 
-		   DBUS_TYPE_INVALID);
-		
-	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
-		return FALSE;
-	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
-	}
-	
-	osso_rpc_free_val(&retval);
-	
-	return TRUE;
-}
-
-gboolean
-libmodfest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
+libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
 	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
 {
 	osso_rpc_t retval;
@@ -80,15 +58,47 @@ libmodfest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to,
 }
 	
 gboolean 
-libmodfest_dbus_client_mailto (osso_context_t *osso_context, const gchar *mailto_uri)
+libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto_uri)
 {
-	return FALSE;
+	osso_rpc_t retval;
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+		   MODEST_DBUS_NAME, 
+		   MODEST_DBUS_METHOD_MAIL_TO, &retval, 
+		   DBUS_TYPE_STRING, mailto_uri, 
+		   DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		printf("debug: osso_rpc_run() failed.\n");
+		return FALSE;
+	} else {
+		printf("debug: osso_rpc_run() succeeded.\n");
+	}
+	
+	osso_rpc_free_val(&retval);
+	
+	return TRUE;
 }
 
 gboolean 
-libmodfest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri)
+libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri)
 {
-	return FALSE;
+	osso_rpc_t retval;
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+		   MODEST_DBUS_NAME, 
+		   MODEST_DBUS_METHOD_OPEN_MESSAGE, &retval, 
+		   DBUS_TYPE_STRING, mail_uri, 
+		   DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		printf("debug: osso_rpc_run() failed.\n");
+		return FALSE;
+	} else {
+		printf("debug: osso_rpc_run() succeeded.\n");
+	}
+	
+	osso_rpc_free_val(&retval);
+	
+	return TRUE;
 }
 
 
