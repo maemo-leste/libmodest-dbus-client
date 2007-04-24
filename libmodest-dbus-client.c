@@ -28,9 +28,8 @@
  */
 
 #include "libmodest-dbus-client.h"
+#include <dbus_api/modest-dbus-api.h> /* For the API strings. */
 
-#define MODEST_DBUS_NAME    "modestemail"
-#define MODEST_DBUS_EXAMPLE_MESSAGE "HelloWorld"
 
 gboolean
 libmodest_dbus_client_call_helloworld(osso_context_t *osso_context)
@@ -38,7 +37,8 @@ libmodest_dbus_client_call_helloworld(osso_context_t *osso_context)
 	osso_rpc_t retval;
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
-		   MODEST_DBUS_EXAMPLE_MESSAGE, &retval, DBUS_TYPE_INVALID);
+		   MODEST_DBUS_EXAMPLE_MESSAGE, &retval, 
+		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
 		printf("debug: osso_rpc_run() failed.\n");
@@ -51,3 +51,44 @@ libmodest_dbus_client_call_helloworld(osso_context_t *osso_context)
 	
 	return TRUE;
 }
+
+gboolean
+libmodfest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
+	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
+{
+	osso_rpc_t retval;
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+		   MODEST_DBUS_NAME, 
+		   MODEST_DBUS_METHOD_SEND_MAIL, &retval, 
+		   DBUS_TYPE_STRING, to, 
+		   DBUS_TYPE_STRING, cc, 
+		   DBUS_TYPE_STRING, bcc, 
+		   DBUS_TYPE_STRING, subject, 
+		   DBUS_TYPE_STRING, body, 
+		   DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		printf("debug: osso_rpc_run() failed.\n");
+		return FALSE;
+	} else {
+		printf("debug: osso_rpc_run() succeeded.\n");
+	}
+	
+	osso_rpc_free_val(&retval);
+	
+	return TRUE;
+}
+	
+gboolean 
+libmodfest_dbus_client_mailto (osso_context_t *osso_context, const gchar *mailto_uri)
+{
+	return FALSE;
+}
+
+gboolean 
+libmodfest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri)
+{
+	return FALSE;
+}
+
+

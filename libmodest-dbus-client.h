@@ -31,9 +31,20 @@
 #define __LIBMODEST_DBUS_CLIENT_H__
 
 #include <libosso.h>
+#include <glib.h>
 #include <stdio.h>
 
 gboolean
-libmodest_dbus_client_call_helloworld(osso_context_t *osso_context);
+libmodest_dbus_client_call_helloworld (osso_context_t *osso_context);
+
+gboolean
+libmodfest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
+	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments);
+	
+gboolean 
+libmodfest_dbus_client_mailto (osso_context_t *osso_context, const gchar *mailto_uri);
+
+gboolean 
+libmodfest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri);
 
 #endif /* __LIBMODEST_DBUS_CLIENT_H__ */
