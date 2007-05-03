@@ -101,4 +101,25 @@ libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *m
 	return TRUE;
 }
 
+gboolean 
+libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
+{
+	osso_rpc_t retval;
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+		   MODEST_DBUS_NAME, 
+		   MODEST_DBUS_METHOD_SEND_RECEIVE, &retval, 
+		   DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		printf("debug: osso_rpc_run() failed.\n");
+		return FALSE;
+	} else {
+		printf("debug: osso_rpc_run() succeeded.\n");
+	}
+	
+	osso_rpc_free_val(&retval);
+	
+	return TRUE;
+}
+
 

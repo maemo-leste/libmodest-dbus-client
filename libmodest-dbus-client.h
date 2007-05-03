@@ -35,13 +35,19 @@
 #include <stdio.h>
 
 gboolean
-libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
-	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments);
+libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, 
+	const gchar *cc, const gchar *bcc, const gchar* subject, const gchar* body, 
+	GSList *attachments);
 	
 gboolean 
-libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto_uri);
+libmodest_dbus_client_mail_to (osso_context_t *osso_context, 
+	const gchar *mailto_uri);
 
 gboolean 
-libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri);
+libmodest_dbus_client_open_message (osso_context_t *osso_context, 
+	const gchar *mail_uri);
+
+gboolean 
+libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
 
 #endif /* __LIBMODEST_DBUS_CLIENT_H__ */
