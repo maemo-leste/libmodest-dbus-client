@@ -7,5 +7,5 @@ Name: libmodest-dbus-client-1.0
 Description: Some library.
 Requires: glib-2.0 dbus-1
 Version: @VERSION@
-Libs: -L${libdir} -lmodest-dbus-client-1.0
-Cflags: -I${includedir}/modest-dbus-client-1.0 -I${libdir}/modest-dbus-client-1.0/include
+Libs: -L${libdir} -llibmodest-dbus-client-1.0
+Cflags: -I${includedir}/libmodest-dbus-client-1.0 -I${libdir}/libmodest-dbus-client-1.0/include
