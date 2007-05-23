@@ -79,6 +79,50 @@ libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto
 	return TRUE;
 }
 
+gboolean
+libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
+	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
+{
+	osso_rpc_t retval;
+	gchar *attachments_str = NULL;
+	gchar *tmp = NULL;
+	GSList *next = NULL;
+	
+	attachments_str = g_strdup( (gchar *) attachments->data );
+	
+	for (next = g_slist_next(attachments); next != NULL; next = g_slist_next(next))
+	{
+		tmp = g_strconcat(attachments_str, ",", (gchar *) (next->data), NULL);
+		g_free(attachments_str);
+		attachments_str = tmp;
+		if (attachments_str == NULL) {
+			return OSSO_ERROR;
+		}
+	}
+
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+		   MODEST_DBUS_NAME, 
+		   MODEST_DBUS_METHOD_COMPOSE_MAIL, &retval, 
+		   DBUS_TYPE_STRING, to, 
+		   DBUS_TYPE_STRING, cc, 
+		   DBUS_TYPE_STRING, bcc, 
+		   DBUS_TYPE_STRING, subject, 
+		   DBUS_TYPE_STRING, body,
+		   DBUS_TYPE_STRING, attachments_str,
+		   DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		printf("debug: osso_rpc_run() failed.\n");
+		return FALSE;
+	} else {
+		printf("debug: osso_rpc_run() succeeded.\n");
+	}
+	
+	osso_rpc_free_val(&retval);
+	
+	return TRUE;
+}
+
 gboolean 
 libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri)
 {
@@ -121,5 +165,3 @@ libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 	
 	return TRUE;
 }
-
-
