@@ -50,4 +50,39 @@ libmodest_dbus_client_open_message (osso_context_t *osso_context,
 gboolean 
 libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
 
+
+typedef enum {
+
+	MODEST_DBUS_SEARCH_SUBJECT   = (1 << 0),
+	MODEST_DBUS_SEARCH_SENDER    = (1 << 1),
+	MODEST_DBUS_SEARCH_RECIPIENT = (1 << 2),
+	MODEST_DBUS_SEARCH_SIZE      = (1 << 3),
+	MODEST_DBUS_SEARCH_BODY      = (1 << 6)
+
+} ModestDBusSearchFlags;
+
+typedef struct {
+
+	gchar     *msgid;
+	gchar     *subject;
+	gchar     *folder;
+	gchar     *sender;
+	guint64    msize;
+	gboolean   has_attachment;
+	gboolean   is_unread;
+	gint64     timestamp;		 
+
+} ModestSearchHit;
+
+gboolean
+libmodest_dbus_client_search (osso_context_t          *osso_ctx,
+			      const gchar             *query,
+			      const gchar             *folder,
+			      time_t		       start_date,
+			      time_t		       end_date,
+			      guint32                  min_size,
+			      ModestDBusSearchFlags    flags,
+			      GList                  **hits);
+
+
 #endif /* __LIBMODEST_DBUS_CLIENT_H__ */
