@@ -259,8 +259,6 @@ dbus_message_iter_get_search_hit (DBusMessageIter *parent)
 		return NULL;
 	}
 
-	g_debug ("Umarshalling hit (%d)", dbus_message_iter_get_arg_type (parent));
-
 	dbus_message_iter_recurse (parent, &child);
 	
 	/* msgid  */
@@ -509,9 +507,7 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 	dbus_message_iter_init (reply, &iter);
 	arg_type = dbus_message_iter_get_arg_type (&iter);
 	
-	g_debug ("iter type: %d", arg_type);
 	dbus_message_iter_recurse (&iter, &child);
-	g_debug ("recursed");
 
 	do {
 		ModestSearchHit *hit;
@@ -526,7 +522,8 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 	dbus_message_unref (reply);
 
-	g_debug ("Done unmarshalling message");
+
+	/* TODO: This is from osso source, do we need it? */
 #if 0
 	/* Tell TaskNavigator to show "launch banner" */
 	msg = dbus_message_new_method_call (TASK_NAV_SERVICE,
