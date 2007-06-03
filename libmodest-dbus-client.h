@@ -74,15 +74,20 @@ typedef struct {
 
 } ModestSearchHit;
 
-gboolean
-libmodest_dbus_client_search (osso_context_t          *osso_ctx,
-			      const gchar             *query,
-			      const gchar             *folder,
-			      time_t		       start_date,
-			      time_t		       end_date,
-			      guint32                  min_size,
-			      ModestDBusSearchFlags    flags,
-			      GList                  **hits);
+
+void modest_search_hit_free      (ModestSearchHit *hit);
+void modest_search_hit_list_free (GList *hits);
 
 
+gboolean       libmodest_dbus_client_search            (osso_context_t          *osso_ctx,
+							const gchar             *query,
+							const gchar             *folder,
+							time_t                   start_date,
+							time_t                   end_date,
+							guint32                  min_size,
+							ModestDBusSearchFlags    flags,
+							GList                  **hits);
+
+gboolean        libmodest_dbus_client_delete_message   (osso_context_t   *osso_ctx,
+							const char       *msg_uri);
 #endif /* __LIBMODEST_DBUS_CLIENT_H__ */

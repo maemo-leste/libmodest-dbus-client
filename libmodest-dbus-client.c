@@ -171,14 +171,48 @@ libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 	return TRUE;
 }
 
-static void
+gboolean
+libmodest_dbus_client_delete_message (osso_context_t   *osso_ctx,
+				      const char       *msg_uri)
+{
+	osso_rpc_t    retval;
+	osso_return_t ret;
+       
+	ret = osso_rpc_run_with_defaults (osso_ctx, 
+					  MODEST_DBUS_NAME, 
+					  MODEST_DBUS_METHOD_DELETE_MESSAGE, &retval, 
+					  DBUS_TYPE_STRING, msg_uri, 
+					  DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		g_debug ("debug: osso_rpc_run() failed.\n");
+	} else {
+		g_debug ("debug: osso_rpc_run() succeeded.\n");
+	}
+	
+	osso_rpc_free_val (&retval);
+
+	return ret == OSSO_OK;
+}
+
+void
 modest_search_hit_free (ModestSearchHit *hit)
 {
 	g_free (hit->msgid);
-
 	g_slice_free (ModestSearchHit, hit);
 }
 
+void
+modest_search_hit_list_free (GList *hits)
+{
+	GList *iter;
+
+	for (iter = hits; iter; iter = iter->next) {
+		modest_search_hit_free ((ModestSearchHit *) iter->data);
+	}
+
+	g_list_free (hits);
+}
 
 static char *
 _dbus_iter_get_string_or_null (DBusMessageIter *iter)
