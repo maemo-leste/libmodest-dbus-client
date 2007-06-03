@@ -207,6 +207,10 @@ modest_search_hit_list_free (GList *hits)
 {
 	GList *iter;
 
+	if (hits == NULL) {
+		return;
+	}
+
 	for (iter = hits; iter; iter = iter->next) {
 		modest_search_hit_free ((ModestSearchHit *) iter->data);
 	}
