@@ -35,6 +35,24 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <string.h>
 
+/**
+ * libmodest_dbus_client_send_mail:
+ * @osso_context: a valid #osso_context_t object.
+ * @to: The Recipients (From: line)
+ * @cc: Recipients for carbon copies
+ * @bcc: Recipients for blind carbon copies
+ * @subject: Subject line
+ * @body: The actual body of the mail to send
+ * @attachments: Additional list of attachments
+ * 
+ * This function will try to do a remote procedure call (rpc)
+ * into modest (or start it if necessary) and open a composer
+ * window with the supplied parameters prefilled.
+ *
+ * Return value: Whether or not the rpc call to modest
+ * was successfull
+ **/
+
 gboolean
 libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
 	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
@@ -128,6 +146,18 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 	return TRUE;
 }
 
+/**
+ * libmodest_dbus_client_dopen_message:
+ * @osso_context: a valid #osso_context_t object.
+ * @msg_uri: A valid url to a mail
+ *
+ * This method will try to find the message supplied
+ * by @msg_uri and open it for display if found. 
+ * It will use remote procedure calls (rpc) over 
+ * dbus to do so.
+ *  
+ * Return value: TRUE on successs, FALSE on error
+ **/
 gboolean 
 libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri)
 {
@@ -171,6 +201,17 @@ libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 	return TRUE;
 }
 
+/**
+ * libmodest_dbus_client_delete_message:
+ * @osso_context: a valid #osso_context_t object.
+ * @msg_uri: A valid url to a mail 
+ *
+ * This method will try to find the message supplied
+ * by @msg_uri and if found delete it. It will use
+ * remote procedure calls (rpc) over dbus to do so.
+ * 
+ * Return value: TRUE on successs, FALSE on error
+ **/
 gboolean
 libmodest_dbus_client_delete_message (osso_context_t   *osso_ctx,
 				      const char       *msg_uri)
@@ -437,7 +478,69 @@ out:
 	return hit;
 }
 
-
+/**
+ * libmodest_dbus_client_search:
+ * @osso_ctx: A valid #osso_context_t object.
+ * @query: The term to search for.
+ * @folder: An url to specific folder or %NULL to search everywhere.
+ * @start_date: Search hits before this date will be ignored.
+ * @end_date: Search hits after this date will be ignored.
+ * @min_size: Messagers smaller then this size will be ingored.
+ * @flags: A list of flags where to search so the documentation 
+ * of %ModestDBusSearchFlags for details.
+ * @hits: A pointer to a valid GList pointer that will contain the search
+ * hits (must be freed by the caller).
+ *
+ * This method will search the folder specified by a valid url in @folder or all
+ * known accounts (local and remote) if %NULL for matches of the search term(s)
+ * specified in @query. It is legal to specify 0 in @start_date, @end_date and
+ * @min_size to ignore these parameters during the search otherwise those message
+ * that do not meet the specifed dates or size will be ignored.
+ * Where to search, be it subject, sender or the whole body can be specified by
+ * the @flags parameter.
+ *
+ * Upon success TRUE is returned and @hits will include the search hits or the list
+ * migh be empty if none of the messages matched the search criteria. The returned
+ * list must be freed with modest_search_hit_list_free (). It is save to pass
+ * %NULL to this function so you can call this function on the result list no matter
+ * if a hit was found or not (means the list is empty - i.e. %NULL)
+ * FALSE will only be return if an error during the remote procedure call (rpc) 
+ * occured or if the specified folder could not be found.
+ *
+ * NOTE: The body of a message can only be searched if it was previously downloaded by
+ * modest. This function does also not attempt do to remote searches (i.e. IMAP search).
+ *
+ * Example to search every account for message containing "no":
+ * <informalexample><programlisting>
+ * ModestDBusSearchFlags  flags;
+ * osso_context_t        *osso_ctx;
+ * GList                 *hit;
+ * GList                 *iter;
+ * gboolean               res;
+ * 
+ * [...] Initialize osso context [...]
+ *
+ * res = libmodest_dbus_client_search (osso_context,
+ *				       "no",
+ *				       NULL,
+ *				       0,
+ *				       0,
+ *				       0,
+ *				       flags,
+ *				       &hits);
+ * 
+ * for (iter = hits; iter; iter = iter->next) {
+ *	ModestSearchHit *hit = (ModestSearchHit *) iter->data;
+ *   	
+ *   	[...] Do something with the hit [...]
+ *
+ *	}
+ *
+ *	modest_search_hit_list_free (hits);
+ * </programlisting></informalexample>
+ * 
+ * Return value: TRUE if the search succeded or FALSE for an error during the search
+ **/
 gboolean
 libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 			      const gchar             *query,
@@ -463,6 +566,9 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 	dbus_int32_t flags_v;
 	dbus_uint32_t size_v;
 
+	if (query == NULL) {
+		return FALSE;
+	}
 
 	con = osso_get_dbus_connection (osso_ctx);
 
@@ -482,6 +588,10 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
         	//ULOG_ERR_F("dbus_message_new_method_call failed");
 		return OSSO_ERROR;
     	}
+
+	if (folder == NULL) {
+		folder = "";
+	}
 
 	sd_v = start_date;
 	ed_v = end_date;
@@ -546,6 +656,7 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 	arg_type = dbus_message_iter_get_arg_type (&iter);
 	
 	dbus_message_iter_recurse (&iter, &child);
+	*hits = NULL;
 
 	do {
 		ModestSearchHit *hit;
