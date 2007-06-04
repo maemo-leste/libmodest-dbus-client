@@ -513,8 +513,8 @@ out:
  * Example to search every account for message containing "no":
  * <informalexample><programlisting>
  * ModestDBusSearchFlags  flags;
- * osso_context_t        *osso_ctx;
- * GList                 *hit;
+ * osso_context_t        *osso_context;
+ * GList                 *hits;
  * GList                 *iter;
  * gboolean               res;
  * 
