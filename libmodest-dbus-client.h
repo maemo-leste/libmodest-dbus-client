@@ -55,6 +55,8 @@ libmodest_dbus_client_open_message (osso_context_t *osso_context,
 gboolean 
 libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
 
+gboolean 
+libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context);
 
 typedef enum {
 
