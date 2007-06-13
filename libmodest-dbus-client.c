@@ -69,10 +69,10 @@ libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, 
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
 	
 	osso_rpc_free_val(&retval);
@@ -91,10 +91,10 @@ libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
 	
 	osso_rpc_free_val(&retval);
@@ -135,10 +135,10 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
 	
 	osso_rpc_free_val(&retval);
@@ -147,7 +147,7 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 }
 
 /**
- * libmodest_dbus_client_dopen_message:
+ * libmodest_dbus_client_open_message:
  * @osso_context: a valid #osso_context_t object.
  * @msg_uri: A valid url to a mail
  *
@@ -169,10 +169,10 @@ libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *m
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
 	
 	osso_rpc_free_val(&retval);
@@ -190,10 +190,10 @@ libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
 	
 	osso_rpc_free_val(&retval);
@@ -211,10 +211,10 @@ libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context)
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
-		printf("debug: osso_rpc_run() failed.\n");
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
-		printf("debug: osso_rpc_run() succeeded.\n");
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
 	
 	osso_rpc_free_val(&retval);
