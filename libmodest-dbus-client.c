@@ -35,6 +35,37 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <string.h>
 
+
+
+/** Get a comma-separated list of attachement URI strings, 
+ * from a list of strings.
+ */
+static gchar* get_attachments_string (GSList *attachments)
+{
+	if (!attachments)
+		return NULL;
+		
+	gchar *attachments_str = g_strdup("");
+	
+	GSList *iter = attachments;
+	while (iter)
+	{
+		if (iter->data) {
+			gchar *tmp = g_strconcat(attachments_str, ",", (gchar *) (iter->data), NULL);
+			g_free(attachments_str);
+			attachments_str = tmp;
+		}
+		
+		iter = g_slist_next(iter);
+	}
+	
+	return attachments_str;
+}
+
+/* TODO: Is this actually used by anything?
+ * I guess that everything uses *_compose_mail() instead. murrayc.
+ */
+ 
 /**
  * libmodest_dbus_client_send_mail:
  * @osso_context: a valid #osso_context_t object.
@@ -46,17 +77,18 @@
  * @attachments: Additional list of attachments
  * 
  * This function will try to do a remote procedure call (rpc)
- * into modest (or start it if necessary) and open a composer
- * window with the supplied parameters prefilled.
+ * into modest (or start it if necessary) and send a new 
+ * email with the supplied parameters.
  *
  * Return value: Whether or not the rpc call to modest
  * was successfull
  **/
-
 gboolean
 libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
 	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
 {
+	gchar *attachments_str = get_attachments_string(attachments);
+	
 	osso_rpc_t retval;
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
@@ -66,6 +98,7 @@ libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, 
 		   DBUS_TYPE_STRING, bcc, 
 		   DBUS_TYPE_STRING, subject, 
 		   DBUS_TYPE_STRING, body, 
+		   DBUS_TYPE_STRING, attachments_str,
 		   DBUS_TYPE_INVALID);
 		
 	if (ret != OSSO_OK) {
@@ -76,6 +109,8 @@ libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, 
 	}
 	
 	osso_rpc_free_val(&retval);
+	
+	g_free (attachments_str);
 	
 	return TRUE;
 }
@@ -102,26 +137,30 @@ libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto
 	return TRUE;
 }
 
+/**
+ * libmodest_dbus_client_compose_mail:
+ * @osso_context: a valid #osso_context_t object.
+ * @to: The Recipients (From: line)
+ * @cc: Recipients for carbon copies
+ * @bcc: Recipients for blind carbon copies
+ * @subject: Subject line
+ * @body: The actual body of the mail to send
+ * @attachments: Additional list of attachments
+ * 
+ * This function will try to do a remote procedure call (rpc)
+ * into modest (or start it if necessary) and open a composer
+ * window with the supplied parameters prefilled.
+ *
+ * Return value: Whether or not the rpc call to modest
+ * was successfull
+ **/
 gboolean
 libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
 	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
 {
 	osso_rpc_t retval;
-	gchar *attachments_str = NULL;
-	gchar *tmp = NULL;
-	GSList *next = NULL;
 	
-	attachments_str = g_strdup( (gchar *) attachments->data );
-	
-	for (next = g_slist_next(attachments); next != NULL; next = g_slist_next(next))
-	{
-		tmp = g_strconcat(attachments_str, ",", (gchar *) (next->data), NULL);
-		g_free(attachments_str);
-		attachments_str = tmp;
-		if (attachments_str == NULL) {
-			return OSSO_ERROR;
-		}
-	}
+	gchar *attachments_str = get_attachments_string(attachments);
 
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
@@ -142,6 +181,8 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 	}
 	
 	osso_rpc_free_val(&retval);
+
+	g_free (attachments_str);
 	
 	return TRUE;
 }
@@ -283,12 +324,11 @@ modest_search_hit_list_free (GList *hits)
 static char *
 _dbus_iter_get_string_or_null (DBusMessageIter *iter)
 {
-	const char *string;
-	char       *ret;
+	const char *string = NULL;
+	char       *ret = NULL;
 
 	dbus_message_iter_get_basic (iter, &string);
 	
-	ret = NULL;
 	if (string && strlen (string)) {
 		ret = g_strdup (string);
 	}
@@ -510,7 +550,8 @@ out:
  * @flags: A list of flags where to search so the documentation 
  * of %ModestDBusSearchFlags for details.
  * @hits: A pointer to a valid GList pointer that will contain the search
- * hits (must be freed by the caller).
+ * hits (ModestSearchHit). The list and the items must be freed by the caller 
+ * with modest_search_hit_list_free().
  *
  * This method will search the folder specified by a valid url in @folder or all
  * known accounts (local and remote) if %NULL for matches of the search term(s)
