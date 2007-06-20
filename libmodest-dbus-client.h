@@ -70,9 +70,9 @@ typedef enum {
 
 typedef struct {
 
-	gchar     *msgid;
+	gchar     *msgid; /* E.g. the URI of the message. */
 	gchar     *subject;
-	gchar     *folder;
+	gchar     *folder; /* The name, not the URI. */
 	gchar     *sender;
 	guint64    msize;
 	gboolean   has_attachment;
