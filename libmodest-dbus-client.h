@@ -69,7 +69,6 @@ typedef enum {
 } ModestDBusSearchFlags;
 
 typedef struct {
-
 	gchar     *msgid; /* E.g. the URI of the message. */
 	gchar     *subject;
 	gchar     *folder; /* The name, not the URI. */
@@ -78,15 +77,13 @@ typedef struct {
 	gboolean   has_attachment;
 	gboolean   is_unread;
 	gint64     timestamp;		 
-
 } ModestSearchHit;
 
 
-void modest_search_hit_free      (ModestSearchHit *hit);
 void modest_search_hit_list_free (GList *hits);
 
 
-gboolean       libmodest_dbus_client_search            (osso_context_t          *osso_ctx,
+gboolean libmodest_dbus_client_search            (osso_context_t          *osso_ctx,
 							const gchar             *query,
 							const gchar             *folder,
 							time_t                   start_date,
@@ -95,6 +92,19 @@ gboolean       libmodest_dbus_client_search            (osso_context_t          
 							ModestDBusSearchFlags    flags,
 							GList                  **hits);
 
-gboolean        libmodest_dbus_client_delete_message   (osso_context_t   *osso_ctx,
+gboolean libmodest_dbus_client_delete_message   (osso_context_t   *osso_ctx,
 							const char       *msg_uri);
+							
+							
+typedef struct {
+	gchar     *folder_uri;
+	gchar     *folder_name;	 
+} ModestFolderResult;
+
+gboolean libmodest_dbus_client_get_folders (osso_context_t *osso_ctx, GList **folders);	
+
+void modest_folder_result_list_free (GList *folders);
+
+						
+							
 #endif /* __LIBMODEST_DBUS_CLIENT_H__ */

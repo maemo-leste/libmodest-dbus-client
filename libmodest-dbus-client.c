@@ -298,7 +298,7 @@ libmodest_dbus_client_delete_message (osso_context_t   *osso_ctx,
 	return ret == OSSO_OK;
 }
 
-void
+static void
 modest_search_hit_free (ModestSearchHit *hit)
 {
 	g_free (hit->msgid);
@@ -380,9 +380,10 @@ _dbus_iter_get_boolean (DBusMessageIter *iter)
 	return ret;
 }
 
-
+/** Get the values from the complex type (SEARCH_HIT_DBUS_TYPE)
+ * in the D-Bus return message. */
 static ModestSearchHit *
-dbus_message_iter_get_search_hit (DBusMessageIter *parent)
+modest_dbus_message_iter_get_search_hit (DBusMessageIter *parent)
 {
 	ModestSearchHit *hit;
 	DBusMessageIter  child;
@@ -513,7 +514,7 @@ dbus_message_iter_get_search_hit (DBusMessageIter *parent)
 		goto out;
 	}
 
-	/* msize  */
+	/* timestamp  */
 	arg_type = dbus_message_iter_get_arg_type (&child);
 
 	if (arg_type != DBUS_TYPE_INT64) {
@@ -531,7 +532,7 @@ dbus_message_iter_get_search_hit (DBusMessageIter *parent)
 
 out:
 	if (error) {
-		g_warning ("Error during unmarshaling");
+		g_warning ("%s: Error during unmarshalling", __FUNCTION__);
 		modest_search_hit_free (hit);
 		hit = NULL;
 	}
@@ -615,14 +616,14 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 {
 
 	DBusMessage *msg;
-    	dbus_bool_t res;
+	dbus_bool_t res;
   	DBusError err;
 	DBusConnection *con;
 	DBusMessageIter iter;
 	DBusMessageIter child;
-        DBusMessage *reply = NULL;
+	DBusMessage *reply = NULL;
 	gint timeout;
-	int          arg_type;
+	int arg_type;
 	dbus_int64_t sd_v;
 	dbus_int64_t ed_v;
 	dbus_int32_t flags_v;
@@ -642,14 +643,14 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 
 	msg = dbus_message_new_method_call (MODEST_DBUS_SERVICE,
-					    MODEST_DBUS_OBJECT,
-     					    MODEST_DBUS_IFACE,
-					    MODEST_DBUS_METHOD_SEARCH);
+		MODEST_DBUS_OBJECT,
+		MODEST_DBUS_IFACE,
+		MODEST_DBUS_METHOD_SEARCH);
 
-    	if (msg == NULL) {
-        	//ULOG_ERR_F("dbus_message_new_method_call failed");
+    if (msg == NULL) {
+       	//ULOG_ERR_F("dbus_message_new_method_call failed");
 		return OSSO_ERROR;
-    	}
+    }
 
 	if (folder == NULL) {
 		folder = "";
@@ -712,7 +713,7 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 			return FALSE;
 	}
 
-	g_debug ("message return");
+	g_debug ("%s: message return", __FUNCTION__);
 
 	dbus_message_iter_init (reply, &iter);
 	arg_type = dbus_message_iter_get_arg_type (&iter);
@@ -723,7 +724,7 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 	do {
 		ModestSearchHit *hit;
 
-		hit = dbus_message_iter_get_search_hit (&child);
+		hit = modest_dbus_message_iter_get_search_hit (&child);
 
 		if (hit) {
 			*hits = g_list_prepend (*hits, hit);	
@@ -764,4 +765,227 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 	return TRUE;
 }
+
+
+static void
+modest_folder_result_free (ModestFolderResult *item)
+{
+	g_free (item->folder_name);
+	g_free (item->folder_uri);
+	g_slice_free (ModestFolderResult, item);
+}
+
+void
+modest_folder_result_list_free (GList *list)
+{
+	GList *iter;
+
+	if (list == NULL) {
+		return;
+	}
+
+	for (iter = list; iter; iter = iter->next) {
+		modest_folder_result_free ((ModestFolderResult *) iter->data);
+	}
+
+	g_list_free (list);
+}
+
+
+/** Get the values from the complex type (GET_FOLDERS_RESULT_DBUS_TYPE)
+ * in the D-Bus return message. */
+static ModestFolderResult *
+modest_dbus_message_iter_get_folder_item (DBusMessageIter *parent)
+{
+	gboolean error = FALSE;
+	ModestFolderResult *item = g_slice_new0 (ModestFolderResult);
+
+	int arg_type = dbus_message_iter_get_arg_type (parent);
+
+	if (arg_type != 'r') {
+		return NULL;
+	}
+
+	DBusMessageIter  child;
+	dbus_message_iter_recurse (parent, &child);
+	
+	/* folder name: */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_STRING) {
+		error = TRUE;
+		goto out;
+	}
+
+	item->folder_name = _dbus_iter_get_string_or_null (&child);
+	
+	
+	dbus_bool_t res = dbus_message_iter_next (&child);
+	if (res == FALSE) {
+		error = TRUE;
+		goto out;
+	}
+
+	/* folder URI:  */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_STRING) {
+		error = TRUE;
+		goto out;
+	}
+
+	item->folder_uri = _dbus_iter_get_string_or_null (&child);
+
+
+out:
+	if (error) {
+		g_warning ("%s: Error during unmarshalling", __FUNCTION__);
+		modest_folder_result_free (item);
+		item = NULL;
+	}
+
+	return item;
+}
+
+/**
+ * libmodest_dbus_client_get_folders:
+ * @osso_ctx: A valid #osso_context_t object.
+ * @folders: A pointer to a valid GList pointer that will contain the folder items
+ * (ModestFolderResult). The list and the items must be freed by the caller 
+ * with modest_folder_result_list_free().
+ *
+ * This method will obtain a list of folders in the default account.
+ *
+ * Upon success TRUE is returned and @folders will include the folders or the list
+ * might be empty if there are no folders. The returned
+ * list must be freed with modest_folder_result_list_free ().
+ *
+ * NOTE: A folder will only be retrieved if it was previously downloaded by
+ * modest. This function does also not attempt do to remote refreshes (i.e. IMAP).
+ * 
+ * Return value: TRUE if the request succeded or FALSE for an error.
+ **/
+gboolean
+libmodest_dbus_client_get_folders (osso_context_t          *osso_ctx,
+			      GList                  **folders)
+{
+	/* Initialize output argument: */
+	if (folders)
+		*folders = NULL;
+	else
+		return FALSE;
+
+	DBusConnection *con = osso_get_dbus_connection (osso_ctx);
+
+	if (con == NULL) {
+		g_warning ("Could not get dbus connection\n");
+		return FALSE;
+
+	}
+
+	DBusMessage *msg = dbus_message_new_method_call (MODEST_DBUS_SERVICE,
+		MODEST_DBUS_OBJECT,
+		MODEST_DBUS_IFACE,
+		MODEST_DBUS_METHOD_GET_FOLDERS);
+
+    if (msg == NULL) {
+       	//ULOG_ERR_F("dbus_message_new_method_call failed");
+		return OSSO_ERROR;
+    }
+
+	dbus_message_set_auto_start (msg, TRUE);
+
+	gint timeout = 1000; //XXX
+	osso_rpc_get_timeout (osso_ctx, &timeout);
+
+  	DBusError err;
+  	dbus_error_init (&err);
+	DBusMessage *reply = dbus_connection_send_with_reply_and_block (con,
+							   msg, 
+							   timeout,
+							   &err);
+
+	dbus_message_unref (msg);
+	msg = NULL;
+
+	if (reply == NULL) {
+		//ULOG_ERR_F("dbus_connection_send_with_reply_and_block error: %s", err.message);
+		//XXX to GError?! 
+		return FALSE;
+	}
+
+	switch (dbus_message_get_type (reply)) {
+
+		case DBUS_MESSAGE_TYPE_ERROR:
+			dbus_set_error_from_message (&err, reply);
+			//XXX to GError?!
+			dbus_error_free (&err);
+			dbus_message_unref (reply);
+			return FALSE;
+
+		case DBUS_MESSAGE_TYPE_METHOD_RETURN:
+			/* ok we are good to go
+			 * lets drop outa here and handle that */
+			break;
+		default:
+			//ULOG_WARN_F("got unknown message type as reply");
+			//retval->type = DBUS_TYPE_STRING;
+			//retval->value.s = g_strdup("Invalid return value");
+			//XXX to GError?! 
+			dbus_message_unref (reply);
+			return FALSE;
+	}
+
+	g_debug ("%s: message return", __FUNCTION__);
+
+	DBusMessageIter iter;
+	dbus_message_iter_init (reply, &iter);
+	/* int arg_type = dbus_message_iter_get_arg_type (&iter); */
+	
+	DBusMessageIter child;
+	dbus_message_iter_recurse (&iter, &child);
+
+	do {
+		ModestFolderResult *item = modest_dbus_message_iter_get_folder_item (&child);
+
+		if (item) {
+			*folders = g_list_append (*folders, item);	
+		}
+
+	} while (dbus_message_iter_next (&child));
+
+	dbus_message_unref (reply);
+
+
+	/* TODO: This is from osso source, do we need it? */
+#if 0
+	/* Tell TaskNavigator to show "launch banner" */
+	msg = dbus_message_new_method_call (TASK_NAV_SERVICE,
+					    APP_LAUNCH_BANNER_METHOD_PATH,
+					    APP_LAUNCH_BANNER_METHOD_INTERFACE,
+					    APP_LAUNCH_BANNER_METHOD);
+
+	if (msg == NULL) {
+		g_warn ("dbus_message_new_method_call failed");
+	}
+
+
+
+	dbus_message_append_args (msg,
+				  DBUS_TYPE_STRING,
+				  &service,
+				  DBUS_TYPE_INVALID);
+
+	b = dbus_connection_send (conn, msg, NULL);
+
+	if (b == NULL) {
+		ULOG_WARN_F("dbus_connection_send failed");
+	}
+
+	dbus_message_unref (msg);
+#endif
+
+	return TRUE;
+}
+
 
