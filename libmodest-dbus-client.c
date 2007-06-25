@@ -671,8 +671,6 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 	dbus_message_set_auto_start (msg, TRUE);
 
-	dbus_error_init (&err);
-
 	/* Use a long timeout (2 minutes) because the search currently 
 	 * gets folders and messages from the servers. */
 	timeout = 120000; //milliseconds.
@@ -682,6 +680,7 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 		__FUNCTION__); */
 	/* TODO: Detect the timeout somehow. */
 	DBusError err;
+	dbus_error_init (&err);
 	reply = dbus_connection_send_with_reply_and_block (con,
 							   msg, 
 							   timeout,
