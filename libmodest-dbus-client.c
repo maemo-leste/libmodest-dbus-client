@@ -617,7 +617,6 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 	DBusMessage *msg;
 	dbus_bool_t res;
-  	DBusError err;
 	DBusConnection *con;
 	DBusMessageIter iter;
 	DBusMessageIter child;
@@ -674,22 +673,29 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 	dbus_error_init (&err);
 
-	timeout = 1000; //XXX
-	osso_rpc_get_timeout (osso_ctx, &timeout);
+	/* Use a long timeout (2 minutes) because the search currently 
+	 * gets folders and messages from the servers. */
+	timeout = 120000; //milliseconds.
+	//osso_rpc_get_timeout (osso_ctx, &timeout);
 
+    /*printf("DEBUG: %s: Before dbus_connection_send_with_reply_and_block().\n", 
+		__FUNCTION__); */
+	/* TODO: Detect the timeout somehow. */
+	DBusError err;
 	reply = dbus_connection_send_with_reply_and_block (con,
 							   msg, 
 							   timeout,
 							   &err);
+	/* printf("DEBUG: %s: dbus_connection_send_with_reply_and_block() finished.\n", 
+		__FUNCTION__); */
 
 	dbus_message_unref (msg);
 
-
-	if (reply == NULL) {
-            //ULOG_ERR_F("dbus_connection_send_with_reply_and_block error: %s", err.message);
-	    //XXX to GError?! 
-            return FALSE;
-        }
+	if (!reply) {
+		g_warning("%s: dbus_connection_send_with_reply_and_block() error: %s", 
+			__FUNCTION__, err.message);
+		return FALSE;
+	}
 
 	switch (dbus_message_get_type (reply)) {
 
@@ -895,8 +901,10 @@ libmodest_dbus_client_get_folders (osso_context_t          *osso_ctx,
 
 	dbus_message_set_auto_start (msg, TRUE);
 
-	gint timeout = 1000; //XXX
-	osso_rpc_get_timeout (osso_ctx, &timeout);
+	/* Use a long timeout (2 minutes) because the search currently 
+	 * gets folders from the servers. */
+	gint timeout = 120000;
+	//osso_rpc_get_timeout (osso_ctx, &timeout);
 
   	DBusError err;
   	dbus_error_init (&err);
@@ -909,8 +917,8 @@ libmodest_dbus_client_get_folders (osso_context_t          *osso_ctx,
 	msg = NULL;
 
 	if (reply == NULL) {
-		//ULOG_ERR_F("dbus_connection_send_with_reply_and_block error: %s", err.message);
-		//XXX to GError?! 
+		g_warning("%s: dbus_connection_send_with_reply_and_block() error:\n   %s", 
+			__FUNCTION__, err.message);
 		return FALSE;
 	}
 
