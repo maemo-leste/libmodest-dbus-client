@@ -61,60 +61,19 @@ static gchar* get_attachments_string (GSList *attachments)
 	
 	return attachments_str;
 }
-
-/* TODO: Is this actually used by anything?
- * I guess that everything uses *_compose_mail() instead. murrayc.
- */
- 
+	
 /**
- * libmodest_dbus_client_send_mail:
+ * libmodest_dbus_client_mail_to:
  * @osso_context: a valid #osso_context_t object.
- * @to: The Recipients (From: line)
- * @cc: Recipients for carbon copies
- * @bcc: Recipients for blind carbon copies
- * @subject: Subject line
- * @body: The actual body of the mail to send
- * @attachments: Additional list of attachments
+ * @mailto_uri: A mailto URI.
  * 
  * This function will try to do a remote procedure call (rpc)
- * into modest (or start it if necessary) and send a new 
- * email with the supplied parameters.
+ * into modest (or start it if necessary) and open a composer
+ * window with the supplied parameters prefilled.
  *
  * Return value: Whether or not the rpc call to modest
  * was successfull
  **/
-gboolean
-libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
-	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
-{
-	gchar *attachments_str = get_attachments_string(attachments);
-	
-	osso_rpc_t retval;
-	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
-		   MODEST_DBUS_NAME, 
-		   MODEST_DBUS_METHOD_SEND_MAIL, &retval, 
-		   DBUS_TYPE_STRING, to, 
-		   DBUS_TYPE_STRING, cc, 
-		   DBUS_TYPE_STRING, bcc, 
-		   DBUS_TYPE_STRING, subject, 
-		   DBUS_TYPE_STRING, body, 
-		   DBUS_TYPE_STRING, attachments_str,
-		   DBUS_TYPE_INVALID);
-		
-	if (ret != OSSO_OK) {
-		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
-		return FALSE;
-	} else {
-		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
-	}
-	
-	osso_rpc_free_val(&retval);
-	
-	g_free (attachments_str);
-	
-	return TRUE;
-}
-	
 gboolean 
 libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto_uri)
 {
@@ -144,7 +103,7 @@ libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto
  * @cc: Recipients for carbon copies
  * @bcc: Recipients for blind carbon copies
  * @subject: Subject line
- * @body: The actual body of the mail to send
+ * @body: The actual body of the mail to compose.
  * @attachments: Additional list of attachments
  * 
  * This function will try to do a remote procedure call (rpc)

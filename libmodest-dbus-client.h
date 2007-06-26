@@ -35,11 +35,6 @@
 #include <stdio.h>
 
 gboolean
-libmodest_dbus_client_send_mail (osso_context_t *osso_context, const gchar *to, 
-	const gchar *cc, const gchar *bcc, const gchar* subject, const gchar* body, 
-	GSList *attachments);
-
-gboolean
 libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *to, 
 	const gchar *cc, const gchar *bcc, const gchar* subject, const gchar* body, 
 	GSList *attachments);
