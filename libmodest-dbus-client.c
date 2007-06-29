@@ -104,7 +104,7 @@ libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto
  * @bcc: Recipients for blind carbon copies
  * @subject: Subject line
  * @body: The actual body of the mail to compose.
- * @attachments: Additional list of attachments
+ * @attachments: Additional list of attachments. A list of URI strings.
  * 
  * This function will try to do a remote procedure call (rpc)
  * into modest (or start it if necessary) and open a composer
