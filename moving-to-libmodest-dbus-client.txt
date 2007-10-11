@@ -1,0 +1,64 @@
+Moving to libmodest-dbus-client
+Time-stamp: <2007-10-11 18:16:37 (djcb)>
+========================================
+
+Some notes on how to migrate from osso-email-interface to the 
+new libmodest-dbus-client.
+
+1. debian/control
+=================
+In your debian/control-file, add "libmodest-dbus-client-dev" to your
+Build-Depends, and remove any reference to osso-email-interface.
+
+
+2. configure.(ac|in)
+====================
+Add libmodest-dbus-client-1.0 to your modules, e.g.
+PKG_CHECK_MODULES(LIBMODEST_DBUS_CLIENT,[libmodest-dbus-client-1.0])
+and, again, remove all reference to osso-email-interface,
+libossoemailinterface and friends.
+
+3. #include
+===========
+In your implementation files, remove (again) al references to
+osso-email-interface, and add:
+#include <libmodest-dbus-client/libmodest-dbus-client.h>  
+ 
+
+4. replacing calls to osso-email-interface
+==========================================
+After all this has been done, all that is left is replacing the
+library calls.
+
+We give the osso-email-interface calls, and the corresponding
+libmodest-dbus-client call:
+
+
+1. osso_email_files_email (osso_ctx, my_file_list);
+becomes:
+     libmodest_dbus_client_compose_mail (osso_ctx, NULL, NULL, NULL, NULL, NULL, my_file_list);
+
+
+
+
+2. osso_email_url_email (osso_ctx, url);
+becomes:
+     libmodest_dbus_client_compose_mail (osso_ctx, NULL, NULL, NULL, NULL, url, NULL); 		      
+
+
+
+
+3. osso_email_emailto_email (osso_ctx, to_list);
+becomes:
+     libmodest_dbus_client_mail_to (osso_ctx, to_list as_string);
+
+NOTE: libmodest_dbus_client expects to_list_as string, ie. a comma-separated
+list of email addresses.
+
+
+
+Compile & run. That should do it! If you have any questions, pls. send them to
+dirk-jan.binnema@nokia.com
+
+
+
