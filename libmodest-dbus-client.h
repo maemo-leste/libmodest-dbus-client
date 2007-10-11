@@ -34,24 +34,83 @@
 #include <glib.h>
 #include <stdio.h>
 
-gboolean
-libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *to, 
-	const gchar *cc, const gchar *bcc, const gchar* subject, const gchar* body, 
-	GSList *attachments);
-	
-gboolean 
-libmodest_dbus_client_mail_to (osso_context_t *osso_context, 
-	const gchar *mailto_uri);
 
-gboolean 
-libmodest_dbus_client_open_message (osso_context_t *osso_context, 
-	const gchar *mail_uri);
+/**
+ * libmodest_dbus_client_compose_mail:
+ * @osso_context: a valid osso_context instance
+ * @to: the To:-field of the message
+ * @cc: the Cc:-field of the message
+ * @bcc: the Bcc:-field of the message
+ * @subject: the Subject:-field of the message
+ * @body: the body (text) of the message
+ * @attachments: a list of (file://) URIs with the files to attach
+ *
+ * opens a new mail composer with the provided details filled in
+ *  
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *to, 
+					     const gchar *cc, const gchar *bcc, const gchar* subject,
+					     const gchar* body, 
+					     GSList *attachments);
 
-gboolean 
-libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
+/**
+ * libmodest_dbus_client_mail_to:
+ * @osso_context: a valid osso_context instance
+ * @mailto_uri: a 'mailto:foo@bar.cuux' URI
+ *
+ * opens a new mail composer with the provided details filled in,
+ * based on a mailto: string. apart from the To:-field (the first arg),
+ * also, cc, bcc, subject and body are supported, ie. "mailto:foo@bar.cuu?subject=test"
+ *  
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean libmodest_dbus_client_mail_to (osso_context_t *osso_context, 
+					const gchar *mailto_uri);
 
-gboolean 
-libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context);
+
+/**
+ * libmodest_dbus_client_open_message:
+ * @osso_context: a valid osso_context instance
+ * @mail_uri: the unique URI referring to some message
+ *
+ * opens an existing message based on its URI; these URIs are unique pointers
+ * to some message, and are retrieved from modest.
+ *  
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean  libmodest_dbus_client_open_message (osso_context_t *osso_context, 
+					      const gchar *mail_uri);
+
+
+/**
+ * libmodest_dbus_client_send_and_receive:
+ * @osso_context: a valid osso_context instance
+ *
+ * send/receive messages
+ *  
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
+
+
+
+/**
+ * libmodest_dbus_client_open_default_inbox:
+ * @osso_context: a valid osso_context instance
+ *
+ * start modest, and open the inbox for the default account
+ *  
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context);
+
+
+
+/*
+ * below: functions specific to osso-global-search; not useful for other clients.
+ * 
+ */ 
 
 typedef enum {
 
@@ -79,18 +138,18 @@ void modest_search_hit_list_free (GList *hits);
 
 
 gboolean libmodest_dbus_client_search            (osso_context_t          *osso_ctx,
-							const gchar             *query,
-							const gchar             *folder,
-							time_t                   start_date,
-							time_t                   end_date,
-							guint32                  min_size,
-							ModestDBusSearchFlags    flags,
-							GList                  **hits);
+						  const gchar             *query,
+						  const gchar             *folder,
+						  time_t                   start_date,
+						  time_t                   end_date,
+						  guint32                  min_size,
+						  ModestDBusSearchFlags    flags,
+						  GList                  **hits);
 
 gboolean libmodest_dbus_client_delete_message   (osso_context_t   *osso_ctx,
-							const char       *msg_uri);
-							
-							
+						 const char       *msg_uri);
+
+
 typedef struct {
 	gchar     *folder_uri;
 	gchar     *folder_name;	 
