@@ -49,4 +49,4 @@ library_include_HEADERS = libmodest-dbus-client.h
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libmodest-dbus-client-1.0.pc
 
-
+DISTCLEANFILES = $(pkgconfig_DATA)
