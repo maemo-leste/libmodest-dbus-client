@@ -614,8 +614,8 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 		folder = "";
 	}
 
-	sd_v = start_date;
-	ed_v = end_date;
+	sd_v = (dbus_int64_t) start_date;
+	ed_v = (dbus_int64_t) end_date;
 	flags_v = (dbus_int32_t) flags;
 	size_v = (dbus_uint32_t) min_size;
 
