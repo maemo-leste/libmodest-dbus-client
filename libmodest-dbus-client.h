@@ -62,7 +62,7 @@ gboolean libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const
  * opens a new mail composer with the provided details filled in,
  * based on a mailto: string. apart from the To:-field (the first arg),
  * also, cc, bcc, subject and body are supported, ie. "mailto:foo@bar.cuu?subject=test"
- *  
+ *
  * Returns: TRUE upon success, FALSE otherwise
  */
 gboolean libmodest_dbus_client_mail_to (osso_context_t *osso_context, 
@@ -76,7 +76,7 @@ gboolean libmodest_dbus_client_mail_to (osso_context_t *osso_context,
  *
  * opens an existing message based on its URI; these URIs are unique pointers
  * to some message, and are retrieved from modest.
- *  
+ *
  * Returns: TRUE upon success, FALSE otherwise
  */
 gboolean  libmodest_dbus_client_open_message (osso_context_t *osso_context, 
@@ -88,7 +88,7 @@ gboolean  libmodest_dbus_client_open_message (osso_context_t *osso_context,
  * @osso_context: a valid osso_context instance
  *
  * send/receive messages
- *  
+ *
  * Returns: TRUE upon success, FALSE otherwise
  */
 gboolean libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
@@ -100,11 +100,24 @@ gboolean libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
  * @osso_context: a valid osso_context instance
  *
  * start modest, and open the inbox for the default account
- *  
+ *
  * Returns: TRUE upon success, FALSE otherwise
  */
 gboolean libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context);
 
+/**
+ * libmodest_dbus_client_open_account:
+ * @osso_context: a valid osso_context instance
+ * @account_id: the unique ID of one account
+ *
+ * Starts Modest showing the account that is specified as
+ * parametter. Note that this only makes sense when the folder view is
+ * showing just one account
+ *
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean  libmodest_dbus_client_open_account (osso_context_t *osso_context,
+					      const gchar *account_id);
 
 
 /*
