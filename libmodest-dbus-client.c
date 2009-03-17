@@ -118,10 +118,10 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
 {
 	osso_rpc_t retval;
-	
+
 	gchar *attachments_str = get_attachments_string(attachments);
 
-	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context,
 		   MODEST_DBUS_NAME, 
 		   MODEST_DBUS_METHOD_COMPOSE_MAIL, &retval, 
 		   DBUS_TYPE_STRING, to, 
@@ -131,18 +131,19 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 		   DBUS_TYPE_STRING, body,
 		   DBUS_TYPE_STRING, attachments_str,
 		   DBUS_TYPE_INVALID);
-		
+
+	g_free (attachments_str);
+
 	if (ret != OSSO_OK) {
 		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
 		return FALSE;
 	} else {
 		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
 	}
-	
+
 	osso_rpc_free_val(&retval);
 
-	g_free (attachments_str);
-	
+
 	return TRUE;
 }
 
