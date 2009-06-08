@@ -44,24 +44,26 @@ static gchar* get_attachments_string (GSList *attachments)
 {
 	if (!attachments)
 		return NULL;
-		
+
 	gchar *attachments_str = g_strdup("");
-	
+
 	GSList *iter = attachments;
 	while (iter)
 	{
 		if (iter->data) {
-			gchar *tmp = g_strconcat(attachments_str, ",", (gchar *) (iter->data), NULL);
+			gchar *escaped;
+			gchar *tmp;
+			escaped = g_uri_escape_string ((const gchar *) (iter->data), NULL, TRUE);
+			tmp = g_strconcat(attachments_str, ",", escaped, NULL);
+			g_free(escaped);
 			g_free(attachments_str);
 			attachments_str = tmp;
 		}
-		
 		iter = g_slist_next(iter);
 	}
-	
 	return attachments_str;
 }
-	
+
 /**
  * libmodest_dbus_client_mail_to:
  * @osso_context: a valid #osso_context_t object.
