@@ -79,7 +79,7 @@ static gchar* get_attachments_string (GSList *attachments)
 gboolean 
 libmodest_dbus_client_mail_to (osso_context_t *osso_context, const gchar *mailto_uri)
 {
-	osso_rpc_t retval;
+	osso_rpc_t retval = { 0 };
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
 		   MODEST_DBUS_METHOD_MAIL_TO, &retval, 
@@ -119,7 +119,7 @@ gboolean
 libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *to, const gchar *cc, 
 	const gchar *bcc, const gchar* subject, const gchar* body, GSList *attachments)
 {
-	osso_rpc_t retval;
+	osso_rpc_t retval = { 0 };
 
 	gchar *attachments_str = get_attachments_string(attachments);
 
@@ -164,7 +164,7 @@ libmodest_dbus_client_compose_mail (osso_context_t *osso_context, const gchar *t
 gboolean 
 libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *mail_uri)
 {
-	osso_rpc_t retval;
+	osso_rpc_t retval = { 0 };
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
 		   MODEST_DBUS_METHOD_OPEN_MESSAGE, &retval, 
@@ -186,7 +186,7 @@ libmodest_dbus_client_open_message (osso_context_t *osso_context, const gchar *m
 gboolean 
 libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 {
-	osso_rpc_t retval;
+	osso_rpc_t retval = { 0 };
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
 		   MODEST_DBUS_METHOD_SEND_RECEIVE, &retval, 
@@ -207,7 +207,7 @@ libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 gboolean 
 libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context)
 {
-	osso_rpc_t retval;
+	osso_rpc_t retval = { 0 };
 	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
 		   MODEST_DBUS_NAME, 
 		   MODEST_DBUS_METHOD_OPEN_DEFAULT_INBOX, &retval, 
@@ -229,7 +229,7 @@ gboolean
 libmodest_dbus_client_open_account (osso_context_t *osso_context,
 				    const gchar *account_id)
 {
-	osso_rpc_t retval;
+	osso_rpc_t retval = { 0 };
 	const osso_return_t ret =
 		osso_rpc_run_with_defaults(osso_context,
 					   MODEST_DBUS_NAME,
@@ -264,7 +264,7 @@ gboolean
 libmodest_dbus_client_delete_message (osso_context_t   *osso_ctx,
 				      const char       *msg_uri)
 {
-	osso_rpc_t    retval;
+	osso_rpc_t    retval = { 0 };
 	osso_return_t ret;
        
 	ret = osso_rpc_run_with_defaults (osso_ctx, 
