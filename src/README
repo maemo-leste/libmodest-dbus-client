@@ -1,0 +1,2 @@
+This is a C convenience API for using the modest D-Bus API, without needing to use the generic D-Bus 
+client library directly.

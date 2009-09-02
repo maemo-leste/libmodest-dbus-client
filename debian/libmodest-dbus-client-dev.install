@@ -1,0 +1,5 @@
+usr/lib/pkgconfig/libmodest-dbus-client*
+usr/include/libmodest-dbus-client-1.0/libmodest-dbus-client/libmodest-dbus-client.h
+usr/include/libmodest-dbus-client-1.0/libmodest-dbus-client/libmodest-dbus-api.h
+usr/lib/libmodest-dbus-client-1.0.la
+

@@ -26,30 +26,19 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-SUBDIRS= src
+INCLUDES=\
+	$(MODEST_GSTUFF_CFLAGS) \
+	$(MODEST_PLATFORM_CFLAGS) \
+	-I$(top_srcdir)/src \
+	-DPREFIX=\"@prefix@\"
 
-EXTRA_DIST=                 \
-	mkinstalldirs       \
-	autogen.sh          \
-	NEWS		    \
-	ChangeLog	    \
-	COPYING             \
-	HACKING	            \
-	intltool-extract.in \
-	intltool-merge.in   \
-	intltool-update.in  \
-	debian/changelog    \
-	debian/copyright    \
-	debian/rules
+lib_LTLIBRARIES = libmodest-dbus-client-1.0.la
+libmodest_dbus_client_1_0_la_SOURCES = libmodest-dbus-api.h libmodest-dbus-client.h libmodest-dbus-client.c
 
-DISTCLEANFILES =            \
-	intltool-extract.in \
-	intltool-merge.in   \
-	intltool-update.in
+library_includedir=$(includedir)/libmodest-dbus-client-1.0/libmodest-dbus-client
+library_include_HEADERS = libmodest-dbus-api.h libmodest-dbus-client.h
 
-# we install the NEWS file, so we can give
-# a nice release note dialog when updating 
-# (using the postinst thingie in debian/
-NEWS_FILE=NEWS
-newsdir=$(datadir)/modest/data
-news_DATA = $(NEWS_FILE)
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libmodest-dbus-client-1.0.pc
+
+DISTCLEANFILES = $(pkgconfig_DATA)

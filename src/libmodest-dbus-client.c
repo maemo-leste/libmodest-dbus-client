@@ -28,7 +28,7 @@
  */
 
 #include "libmodest-dbus-client.h"
-#include <dbus_api/modest-dbus-api.h> /* For the API strings. */
+#include "libmodest-dbus-api.h" /* For the API strings. */
 
 //#define DBUS_API_SUBJECT_TO_CHANGE 1
 #include <dbus/dbus.h>

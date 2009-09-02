@@ -1,0 +1,75 @@
+HACKING
+=======
+
+[ Unfortunately, modest is not following these rules everywhere;
+however, it *should* ]
+
+When hacking on modest, please honour these time-tested coding guidelines.
+First, please follow the Linux CodingStyle guidelines
+(/usr/src/linux/Documentation/CodingStyle); for naming, follow the
+Gtk/GObject guidelines.
+    
+Here are some additional notes.
+
+Your editor may help you with this, for example for emacs:
+
+	(c-set-style "K&R")
+	(setq tab-width 8)
+	(setq indent-tabs-mode t)
+	(setq c-basic-offset 8)
+      
+Or the equivalent for your favourite editor.
+
+Lines must not exceed 100 characters.
+
+Functions should do one thing, and do it well. In general, functions
+should not be much longer than 20-30 lines (except for, say, handling
+many different cases in a 'switch'-statement). Files should not get to
+big either; if there are more than, say,1000 lines, it's a sign that
+some refactoring should take place.
+
+Code should compile cleanly with gcc's -Wall compile option. Of course this
+might not always be possible due to problems in dependent libraries and/or
+compiler version. Therefore, do not include -Werror in the standard compile
+options; but do use it when building / testing things yourself.
+
+Code should also run cleanly. GTK+/GLib warnings and errors must be
+taken very seriously.
+    
+Global functions (the ones in .h-files) must be commented using the gtk-doc
+system. This way, we generate nice documentation. After installing
+(under /usr/local), we can browse the results with DevHelp. Just
+add /usr/local/share/gtk-doc/html to the DEVHELP_SEARCH_PATH-environment variable.  
+
+g_signal callback function start with 'on_', ie. for a signal "foo-actived",
+the corresponding callback function will be called on_foo activated. (if
+needed, an namespace prefixes)
+
+global (non-static) functions check their arguments with g_return_if_fail/
+g_return_val if_fail. This will give runtime warnings, and point to bugs in
+the code. Non-bug problems however, should be reported with g_printerr. 
+       g_printerr ("modest: cannot find icon\n")
+
+Furthermore, please follow 'conventional wisdom' for programming with 
+GLib/GTK+/GObject. Some things to remember:
+
+* g_new, g_malloc and friends never return NULL. They terminate
+  the application if it happens (normally).  Therefore, no need to check
+  for NULL returns;
+* g_return_if_fail, g_return_if_reached and friends may be 'turned off', 
+  ie. they are to be used for error checking,  but not for your programming logic
+
+
+DEBUGGING
+=========
+There are some DBUS methods available for debugging.
+
+run-standalone.sh  dbus-send --print-reply --dest=com.nokia.modest /com/nokia/modest com.nokia.modest.DumpOperationQueue
+
+(instead of DumpOperationQueue, you can also use DumpSendQueues or
+DumpAccounts)
+
+These methods will print a list of the current mail operation queue,
+send queues or the accounts. If you don't know what that means, then
+this problably not for you :)
+

@@ -1,0 +1,52 @@
+Source: modest
+Section: mail
+Priority: optional
+Maintainer: Moises Martinez <moises.martinez@nokia.com>
+Build-Depends: debhelper (>= 4.0.0), cdbs, gnome-common, gtkhtml-dev, libconic0-dev, libhildon1-dev, libdbus-1-dev, libdbus-glib-1-dev,
+ libebook-dev, osso-af-settings, libedataserver-dev, libhildonnotify-dev, libgconf2-dev, libglib2.0-dev, libosso-abook-dev,
+ libosso-gnomevfs2-dev, libhildonmime-dev,libtinymail-1.0-0-dev, libtinymail-camel-1.0-0-dev, libtinymail-maemo-1.0-0-dev, libtinymailui-1.0-0-dev,
+ libtinymail-gnomevfs-1.0-0-dev, libtinymailui-gtk-1.0-0-dev, wpeditor0, wpeditor-dev, libhildonhelp-dev, modest-providers-data,
+ libalarm-dev, gtk-doc-tools, libhildonnotify-dev, libnotify-dev, libogs1.2-dev, microb-engine-dev, mce-dev, maemo-launcher-dev
+Standards-Version: 3.6.0
+
+Package: modest
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${launcher:Depends}, modest-providers-data, modest-l10n-mr0,
+ osso-icons-theme, operator-wizard-settings, osso-countries-l10n-mr0, microb-engine
+Description: an e-mail client for platforms with modest resources
+ e-mail client for osso
+
+Package: modest-plugin-dev
+Architecture: any
+Depends: modest
+Description: Plugin development packages for modest mail client.
+ Plugin development packages for modest, the e-mail client for osso.
+
+Package: modest-dbg
+Section: devel
+Architecture: any
+Depends: modest (=${Source-Version})
+Description: debug package for modest
+ Contains the debug symbols for modest app
+
+Package: libmodest-dbus-client
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: library wrapping modest's dbus interface
+ This packages provides the library wrapping for modest's
+ dbus interface
+
+Package: libmodest-dbus-client-dev
+Section: devel
+Architecture: any
+Depends: libmodest-dbus-client
+Description: library wrapping modest's dbus interface (dev package)
+ Development packages for libmodest-dbus-client
+
+Package: libmodest-dbus-client-dbg
+Section: devel
+Architecture: any
+Depends: libmodest-dbus-client (=${Source-Version})
+Description: debug package for modest dbus client
+ This package contains the debug symbols for modest dbus client

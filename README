@@ -1,2 +1,15 @@
-This is a C convenience API for using the modest D-Bus API, without needing to use the generic D-Bus 
-client library directly.
+modest
+------
+
+"modest" is a modest e-mail program, based on Philip van Hoof's *tinymail*.
+tinymail is an effort to ease the writing of email programs, in particular
+for small devices.
+
+And while tinymail can support just about anything, we are using it's 
+*libcamel* backend for mail protocol implementation.
+
+More about camel: http://go-evolution.org/Camel
+More about tinymail: https://svn.cronos.be/svn/tinymail/trunk/
+
+
+

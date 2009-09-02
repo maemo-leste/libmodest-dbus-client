@@ -1,0 +1,77 @@
+Source: modest
+Section: mail
+Priority: optional
+Maintainer: Moises Martinez <moises.martinez@nokia.com>
+Build-Depends: debhelper (>= 4.0.0), cdbs, gnome-common, gtkhtml-dev, libconic0-dev, libhildon1-dev, libdbus-1-dev, libdbus-glib-1-dev, libebook-dev, osso-af-settings, libedataserver-dev, libhildonnotify-dev, libgconf2-dev, libglib2.0-dev, libosso-abook-dev, libosso-gnomevfs2-dev, libhildonmime-dev,libtinymail-1.0-0-dev, libtinymail-camel-1.0-0-dev, libtinymail-maemo-1.0-0-dev,libtinymailui-1.0-0-dev,libtinymail-gnomevfs-1.0-0-dev,libtinymailui-gtk-1.0-0-dev,wpeditor0,wpeditor-dev,libhildonhelp-dev, libalarm-dev, gtk-doc-tools, libhildonnotify-dev, libnotify-dev, libogs1.2-dev, microb-engine-dev, mce-dev
+Standards-Version: 3.6.0
+
+Package: modest
+Architecture: any
+Section: user/Communication
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${launcher:Depends},osso-icons-theme,operator-wizard-settings,osso-countries-l10n-mr0
+Replaces: modest-l10n-engb
+XB-Maemo-Icon-26:
+ iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABmJLR0QA/wD/
+ AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH1wEKDQgQTIRG
+ 3AAABDJJREFUSMftlkuMVEUUhr+6j+7b02+YHnpmLvRAwEQhuvCxIG4EFiZo
+ jCFxA4mLWbBU40KNCxbGxMSdiUvdkJAYopGVsBANIhANOIJhhCiMA/Ie6cf0
+ dN963HLRM31nMsMjMW6MJzmpyjl16q+/6tSpgv+aiP3799s4jonjGGvtsgHW
+ 2iW6MG6hv5IaY5aMA/CiKGJ8fPyhVtWb3KKNResYY2K0jtH3auf7Bw98hNdu
+ t+l0OmQymQeCmHkA/ZAAWscoGdFqtXCklBw9evQBLGKUipHK3F9lr1WL9MrU
+ BN1uF8d1XbrdLocOHbonC3kfEKUMSi6dfMF3duIYrtM7Ny+TyRCGIWfPnmPi
+ +EGGp/cuA0xt/RwTO5gLH2DrZ8AJoPIiqrYPI5sE0x9SqB9GmDna+e1cH9zH
+ 5akpMHOE4UYcx8FJpVKEYUhtbIyvf7hO9OwEmS1vLcpLF92+hjm1C1s/jbAK
+ YVr4Nw5gZ46Rm9xN8NcXOKaJQJNrHcG79glXpyep1cYIwxAAB6BYLDJcHaZY
+ KvHZwS+JIpMA+SXML2+jH3mfaPOnS5jmpt5Bpjfxx8bvmM1u69vbN0+zevUq
+ qsNVisUixhgcYwxBEDBYqVCrjQEu13/9KplNzqDX7qVbeYW4Pb0ESKY2cmPo
+ PSIT4EWX+/auqLBu3RiDgxWCIEAphWeMwXVd8vkcoyMhrWaLVe2L/aA4u5lu
+ dS9aGTL1k0mi4HCz8i5Sgdu9SKATIAa3MToSks/ncV0XKSWO1hohBL7vUyqX
+ WV+ewXdUP6YTvo7UIKXCb37ft89mt9NmBKUNxfbhvr0ZVymMbqVULuH7PkKI
+ BAjAcRx836eoJ5IgWaDuPYlUBts8h2vqfd9MZidax9jYUmof6dtv+8+Ryxfw
+ 4waO4/S2eDHQgqRbJ/r9WzzBT2dOoJQh1UjYGDFAM/U0ABl1nnR8LWGa30km
+ Ogcnt2FlIwFSSiUVYO4GXic5n+zaHRB3uPT7eYL2om1LP4MVqXkKSeLo7Gb8
+ VEDh0hvYDW+CX+gtzBg8rfV8BYjRt77B698fj8qm59ngXOXi5M8ExQkQPdel
+ xhou3/kR1/NYH9dhoGf35i7waPdVZosv4Q/txpjkRfCkVBjTKzH2zrfJ9Rl8
+ itzqEUa7Fr9xHGcu7vvuyCrC1vFIoau7UKKF3ziFkw3JPvYaUfoFIqmRShMY
+ bx5IyV5tihTO4x+zZri0qM4ZhoaG8P093G6/jDEGay1bACEEruuSzWbJlXeQ
+ y+VwXRchBDXgyp93kZFGpnsxnowkWhtiC8XCAJ2uWlJUXS9NqTxIvlBe9jAu
+ gLmeh1QxQif+cilLa7aD1gYLeEpJrIXmrKLRUitW8PuLBiKEEMufbwEDmRQC
+ eskw+dsMnY76V/4KM3c7gECMj49brTXGGBbalVRrQxwbHkhwBVb/yz+SvwGz
+ ut/ZrkydigAAAABJRU5ErkJggg==
+Description: an e-mail client for platforms with modest resources
+ e-mail client for osso
+
+Package: modest-plugin-dev
+Architecture: any
+Depends: modest
+Description: Plugin development packages for modest mail client.
+ Plugin development packages for modest, the e-mail client for osso.
+
+Package: modest-dbg
+Section: devel
+Architecture: any
+Depends: modest (=${Source-Version})
+Description: debug package for modest
+ Contains the debug symbols for modest app
+
+Package: libmodest-dbus-client
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: library wrapping modest's dbus interface
+ This packages provides the library wrapping for modest's
+ dbus interface
+
+Package: libmodest-dbus-client-dev
+Section: devel
+Architecture: any
+Depends: libmodest-dbus-client
+Description: library wrapping modest's dbus interface (dev package)
+ Development packages for libmodest-dbus-client
+
+Package: libmodest-dbus-client-dbg
+Section: devel
+Architecture: any
+Depends: libmodest-dbus-client (=${Source-Version})
+Description: debug package for modest dbus client
+ This package contains the debug symbols for modest dbus client

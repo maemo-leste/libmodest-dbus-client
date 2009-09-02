@@ -1,0 +1,126 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+CFLAGS = -Wall -g
+PACKAGENAME = modest
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
+        CFLAGS += -mthumb
+endif
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	conf_opt += --enable-debug
+endif
+
+config.status: configure
+	dh_testdir
+	# commands to configure the package.
+	if [ ! -x configure ]; then ./autogen.sh; fi
+	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --sysconfdir=/etc --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info $(conf_opt)
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	./autogen.sh
+	touch configure-stamp
+
+build: build-stamp
+
+build-stamp:  config.status
+	dh_testdir
+
+        # commands to compile the package.
+	$(MAKE)
+	touch build-stamp
+
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp 
+
+# commands to clean up after the build process.
+#	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
+
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+# install the package into debian/tmp/
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
+# ACHTUNG: hack
+# we remove the modest.mo english localization, if the current control file contains a reference
+# to modest-l10n-mr0; thus, the modest package will not conflict with that one.
+# if modest-l10n-mr0 is not there, we'll install our own (en_GB) .mo file.
+	if grep -q modest-l10n-mr0 $(CURDIR)/debian/control ; then rm $(CURDIR)/debian/tmp/usr/share/locale/en_GB/LC_MESSAGES/modest.mo ; else echo "modest.mo not removed."; fi
+
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installexamples
+	dh_install --sourcedir=debian/tmp -v
+#	dh_installmenu
+#	dh_installdebconf	
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+#	dh_installman
+	dh_link
+	dh_strip --keep-debug --dbg-package=modest --dbg-package=libmodest-dbus-client
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_python
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	# Not a requirement by now, so don't fail if it's not installed
+#	which dh_maemolauncher && dh_maemolauncher usr/bin/modest || true
+	dh_gencontrol
+#	sh debian/scripts/renew_control_file.sh
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

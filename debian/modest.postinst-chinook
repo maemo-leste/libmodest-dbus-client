@@ -1,0 +1,4 @@
+#!/bin/sh
+
+maemo-select-menu-location modest.desktop tana_fi_extras
+maemo-confirm-text "Modest release-notes" /usr/share/modest/data/NEWS

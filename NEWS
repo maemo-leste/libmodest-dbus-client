@@ -1,0 +1,132 @@
+*2008-w24:
+- Fixes in search, settings and localisation
+
+* 2008-W22:
+- Many stability and performance related issues fixed
+- fixes for some rare crashes
+- SMTP server related fixes
+
+* 2008-W20:
+- a couple of send and receive related issues fixed
+
+* 2008-W19:
+- a couple of rare hangs / crashes fixed
+
+* 2008-W18:
+- some more low-memory fixes
+- many small UI issues were fixed
+- a couple of rare hangs / crashes fixed
+
+* 2008-W17:
+- fixes access to Gmail and some other TLS/SSL sites
+- improved low-memory handling
+- stability fixes
+- fixes for dealing with unreliable networks
+- many tiny UI issues fixes
+
+* 2008-W16:
+- stability fixes
+- logical-id fixes
+- fixed some glitches
+- better support for some UPnP servers (attachments)
+
+* 2008-W15:
+- many fixes related to specific hangs
+- fix for the background-update coredumps
+- improved some error notes
+- improved attachment detection (tinymail)
+- symbol reduction, should help startup a bit
+- added WiMAX support
+
+* 2008-W14:
+
+
+* 2008-W13:
+
+* 2008-W12:
+- fixes for instability in POP3 handling
+- improved error notes for a couple of situations
+- fixed a couple of crashes
+- better handling of memory-full situations
+- better handling of some non-Latin mails
+
+* 2008-W11:
+- many minor UI fixes
+- handful of crasher fixes
+- better handling of non-latin mails
+- better error messages in some cases
+- code improvements and some mem leak fixes 
+
+* 2008-W10:
+- many small UI fixes
+- non-empty body no longer required when sending mail
+- fixes related to handling of non-Latin mails (e.g. Chinese)
+- more specific error notes when connection fails
+- fix a bunch of crashers in various places, and some modality problems
+- fixes related to attachments (when forewarding/replying/opening from drafts)
+- fix some reference leaks
+- localization/truncation fixes
+- optimizations in showing of viewer/editor windows
+- fixes related to address book handling
+- make more actions cancellable
+
+* 2008-W09:
+- no release due to the FOSDEM conference
+
+* 2008-W08:
+- improved support for dealing Chinese / non-ascii languages
+- fix some server-specific imap/namespace crashes (Maemo bug: #2715)
+- fix crash due to failed error handling
+- fix vertical panning
+- don't get called by alarmd when offline (improves battery life)
+- better out-of-mem handling
+- improved attachment detection (tinymail)
+- small ui tweaks all over
+- made NEWS org-mode compliant
+
+* 2008-W07:
+- added maemo-launcher support, which should improve startup speed, memory usage
+- fixed some (increasing rare) crashes
+- fixed attachment detection
+- fixed a number of focus issues
+- many small UI issues (focusing, icons etc.)
+
+* 2008-W06:
+- fixed another bunch of crashers
+- fixed the focus issue that caused addressbook not to work (editor)
+- fix saving of multiple attachments
+- various fixes related to dimming / focussing
+ - performance improvements
+- fixed maemo bug #2790 (wrong section in debian control)
+- improved the working of the cancel-button 
+
+* 2008-W05:
+- fixed crasher in tinymail when message retrieval failed (r3284)
+- tinymail: fix syncing of imap folders with offline changes (r3279)
+- tinymail: fix some memory issues (r3287)
+- fix background download crash
+- many UI issues fixed
+- disable signature when it's not enabled
+- don't send message after cancelling it
+- don't keep 'updating' when going offline
+- read/unread fixes
+
+* 2008-W04:
+- many stability fixes in tinymail (see there) and modest, due to extensive valgrinding
+- fixes for parsing namespaces
+- fix attachment handling in the UI
+- fix attachment forwarding (tinymail)
+- fix misbehaving keyboard shortcuts
+- fix for separator position (Maemo bug #2682)
+- lots of focus/dimming issues resolved
+
+* 2008-W03:
+- now with release notes (also seen in the NEWS)
+- added some dbus-debug methods
+- fixed some memory corruption (incorrect frees) in modest, tinymail-maemo and tinymail-camel
+- fixed bugs in tny tree model (see there)
+- fixed support for message with multiple text/plain parts (#2720)
+- fixed URL support (#2683)
+- fixed many dimming rules, focus issues
+- fixed backspace-usage in find-toolbar
+- code cleanups
