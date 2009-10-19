@@ -1,4 +1,11 @@
-libmodest-dbus-client (3.0.17-rc33) unstable; urgency=low
+libmodest-dbus-client (4:3.1.0-0) unstable; urgency=low
+
+  * Week 42, 2009 - second release
+  * Add API method SendReceiveFull
+
+ -- Moises Martinez <moises.martinez@nokia.com>  Wed, 16 Oct 2009 11:18:00 +0200
+
+libmodest-dbus-client (4:1.0.0-2) unstable; urgency=low
 
   * Initial import
 

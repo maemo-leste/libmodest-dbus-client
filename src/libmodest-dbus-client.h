@@ -87,11 +87,37 @@ gboolean  libmodest_dbus_client_open_message (osso_context_t *osso_context,
  * libmodest_dbus_client_send_and_receive:
  * @osso_context: a valid osso_context instance
  *
- * send/receive messages
+ * send/receive messages automatically for all accounts. This is equivalent 
+ * to the call
+ * libmodest_dbus_client_send_and_receive_full (@osso_context, %NULL, %TRUE)
  *
- * Returns: TRUE upon success, FALSE otherwise
+ * Returns: %TRUE upon success, %FALSE otherwise
  */
 gboolean libmodest_dbus_client_send_and_receive (osso_context_t *osso_context);
+
+
+
+/**
+ * libmodest_dbus_client_send_and_receive_full:
+ * @osso_context: a valid osso_context instance
+ * @account: the account name, or %NULL to do a send receive on all accounts.
+ * @manual: a #gboolean
+ *
+ * send/receive messages. If @manual is %TRUE, the send receive request
+ * will start immediately. If @manual if %FALSE, it may wait for IP heartbeat
+ * if enabled.
+ *
+ * If Modest is built without heartbeat support, then the result of the call
+ * will be the same independently of @manual value (always immediate start).
+ *
+ * The call will apply to @account only, unless @account is %NULL, that means
+ * send receive will be performed on all accounts.
+ *
+ * Returns: %TRUE upon success, %FALSE otherwise
+ */
+gboolean libmodest_dbus_client_send_and_receive_full (osso_context_t *osso_context,
+						      const gchar *account,
+						      gboolean manual);
 
 
 

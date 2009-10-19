@@ -205,6 +205,31 @@ libmodest_dbus_client_send_and_receive (osso_context_t *osso_context)
 }
 
 gboolean 
+libmodest_dbus_client_send_and_receive_full (osso_context_t *osso_context, 
+					     const gchar *account, 
+					     gboolean manual)
+{
+	osso_rpc_t retval = { 0 };
+	const osso_return_t ret = osso_rpc_run_with_defaults(osso_context, 
+							     MODEST_DBUS_NAME,
+							     MODEST_DBUS_METHOD_SEND_RECEIVE_FULL, &retval,
+							     DBUS_TYPE_STRING, account,
+							     DBUS_TYPE_BOOLEAN, manual,
+							     DBUS_TYPE_INVALID);
+		
+	if (ret != OSSO_OK) {
+		printf("debug: %s: osso_rpc_run() failed.\n", __FUNCTION__);
+		return FALSE;
+	} else {
+		printf("debug: %s: osso_rpc_run() succeeded.\n", __FUNCTION__);
+	}
+	
+	osso_rpc_free_val(&retval);
+	
+	return TRUE;
+}
+
+gboolean 
 libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context)
 {
 	osso_rpc_t retval = { 0 };

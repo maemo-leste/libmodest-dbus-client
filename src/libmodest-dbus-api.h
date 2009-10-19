@@ -64,6 +64,14 @@ enum ModestDbusOpenAccountArguments
 
 #define MODEST_DBUS_METHOD_SEND_RECEIVE "SendReceive"
 
+#define MODEST_DBUS_METHOD_SEND_RECEIVE_FULL "SendReceiveFull"
+enum ModestDbusSendReceiveFullArguments
+{
+	MODEST_DBUS_SEND_RECEIVE_FULL_ARG_ACCOUNT_ID,
+	MODEST_DBUS_SEND_RECEIVE_FULL_ARG_MANUAL,
+	MODEST_DBUS_SEND_RECEIVE_FULL_ARGS_COUNT
+};
+
 #define MODEST_DBUS_METHOD_COMPOSE_MAIL "ComposeMail"
 enum ModestDbusComposeMailArguments
 {
