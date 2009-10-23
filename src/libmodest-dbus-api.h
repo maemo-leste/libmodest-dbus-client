@@ -93,6 +93,8 @@ enum ModestDbusDeleteMessageArguments
 
 #define MODEST_DBUS_METHOD_OPEN_DEFAULT_INBOX "OpenDefaultInbox"
 
+#define MODEST_DBUS_METHOD_OPEN_EDIT_ACCOUNTS_DIALOG "OpenEditAccountsDialog"
+
 /*
  * these methods are for debugging only, and should _not_ be
  * exported through libmodest-dbus-client

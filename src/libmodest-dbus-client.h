@@ -132,24 +132,43 @@ gboolean libmodest_dbus_client_send_and_receive_full (osso_context_t *osso_conte
 gboolean libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context);
 
 /**
- * libmodest_dbus_client_open_account:
+ * libmodest_dbus_client_open_edit_accounts_dialog
  * @osso_context: a valid osso_context instance
- * @account_id: the unique ID of one account
  *
- * Starts Modest showing the account that is specified as
- * parametter. Note that this only makes sense when the folder view is
- * showing just one account
+ * Starts Modest showing the edit accounts dialog on top of the
+ * initial window. If there is no account then the new account dialog
+ * is automatically launched
  *
  * Returns: TRUE upon success, FALSE otherwise
  */
-gboolean  libmodest_dbus_client_open_account (osso_context_t *osso_context,
-					      const gchar *account_id);
+gboolean  libmodest_dbus_client_open_edit_accounts_dialog (osso_context_t *osso_context);
 
+/**
+ * libmodest_dbus_client_open_default_inbox:
+ * @osso_context: a valid osso_context instance
+ *
+ * start modest, and open the inbox for the default account
+ *
+ * Returns: TRUE upon success, FALSE otherwise
+ */
+gboolean libmodest_dbus_client_open_default_inbox (osso_context_t *osso_context);
+
+/**
+ * libmodest_dbus_client_open_account:
+ * @osso_context: a valid osso_context instance
+ * @account_id: the id of the account to open
+ *
+ * Shows the folders of a given account
+ *
+ * Returns:  TRUE upon success, FALSE otherwise
+ **/
+gboolean libmodest_dbus_client_open_account (osso_context_t *osso_context,
+					     const gchar *account_id);
 
 /*
  * below: functions specific to osso-global-search; not useful for other clients.
- * 
- */ 
+ *
+ */
 
 typedef enum {
 
