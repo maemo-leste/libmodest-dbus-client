@@ -1,3 +1,10 @@
+libmodest-dbus-client (4:3.2.0-0) unstable; urgency=low
+
+  * Week 43, 2009 - third release
+  * Add API method OpenEditAccountsDialog
+
+ -- Moises Martinez <moises.martinez@nokia.com>  Wed, 23 Oct 2009 11:18:00 +0200
+
 libmodest-dbus-client (4:3.1.0-0) unstable; urgency=low
 
   * Week 42, 2009 - second release
