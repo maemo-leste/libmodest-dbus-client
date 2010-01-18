@@ -119,6 +119,18 @@ gboolean libmodest_dbus_client_send_and_receive_full (osso_context_t *osso_conte
 						      const gchar *account,
 						      gboolean manual);
 
+/**
+ * libmodest_dbus_client_update_folder_counts:
+ * @osso_context: a valid osso_context instance
+ * @account: the account name
+ *
+ * updates folder counts of @account.
+ *
+ * Returns: %TRUE upon success, %FALSE otherwise
+ */
+gboolean libmodest_dbus_client_update_folder_counts (osso_context_t *osso_context,
+						     const gchar *account);
+
 
 
 /**

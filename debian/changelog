@@ -1,3 +1,9 @@
+libmodest-dbus-client (4:3.2.1-0) unstable; urgency=low
+
+  * Add API method UpdateFolderCounts
+
+ -- Moises Martinez <moises.martinez@nokia.com>  Mon, 18 Jan 2010 14:00:44 +0100
+
 libmodest-dbus-client (4:3.2.0-0) unstable; urgency=low
 
   * Week 43, 2009 - third release

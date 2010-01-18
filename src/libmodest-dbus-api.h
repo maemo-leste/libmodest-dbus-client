@@ -117,4 +117,11 @@ enum ModestDbusDeleteMessageArguments
  **/
 #define MODEST_DBUS_METHOD_TOP_APPLICATION "top_application"
 
+#define MODEST_DBUS_METHOD_UPDATE_FOLDER_COUNTS "update_folder_counts"
+enum ModestDbusUpdateFolderCountsArguments
+{
+	MODEST_DBUS_UPDATE_FOLDER_COUNTS_ARG_ACCOUNT_ID,
+	MODEST_DBUS_UPDATE_FOLDER_COUNTS_ARGS_COUNT
+};
+
 #endif /* __MODEST_DBUS_API__ */
