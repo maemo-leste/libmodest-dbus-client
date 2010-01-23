@@ -126,14 +126,36 @@ enum ModestDbusUpdateFolderCountsArguments
 
 /* signal emitted when an account has been created */
 #define MODEST_DBUS_SIGNAL_ACCOUNT_CREATED "account_created"
+enum ModestDbusSignalAccountCreatedArguments
+{
+	MODEST_DBUS_SIGNAL_ACCOUNT_CREATED_ARG_ACCOUNT_ID,
+	MODEST_DBUS_SIGNAL_ACCOUNT_CREATED_ARGS_COUNT
+};
 
 /* signal emitted when an account has been removed */
 #define MODEST_DBUS_SIGNAL_ACCOUNT_REMOVED "account_removed"
+enum ModestDbusSignalAccountRemovedArguments
+{
+	MODEST_DBUS_SIGNAL_ACCOUNT_REMOVED_ARG_ACCOUNT_ID,
+	MODEST_DBUS_SIGNAL_ACCOUNT_REMOVED_ARGS_COUNT
+};
 
 /* signal emitted when a folder is updated */
 #define MODEST_DBUS_SIGNAL_FOLDER_UPDATED "folder_updated"
+enum ModestDbusSignalFolderUpdatedArguments
+{
+	MODEST_DBUS_SIGNAL_FOLDER_UPDATED_ARG_ACCOUNT_ID,
+	MODEST_DBUS_SIGNAL_FOLDER_UPDATED_ARG_FOLDER_ID,
+	MODEST_DBUS_SIGNAL_FOLDER_UPDATED_ARGS_COUNT
+};
 
 /* signal emitted when a message read/unread flag is changed */
 #define MODEST_DBUS_SIGNAL_MSG_READ_CHANGED "msg_read_changed"
+enum ModestDbusSignalMsgReadChangedArguments
+{
+	MODEST_DBUS_SIGNAL_MSG_READ_CHANGED_ARG_MSG_ID,
+	MODEST_DBUS_SIGNAL_MSG_READ_CHANGED_ARG_READ,
+	MODEST_DBUS_SIGNAL_MSG_READ_CHANGED_ARGS_COUNT
+};
 
 #endif /* __MODEST_DBUS_API__ */
