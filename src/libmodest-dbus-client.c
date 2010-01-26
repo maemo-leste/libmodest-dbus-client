@@ -377,6 +377,49 @@ modest_search_hit_list_free (GList *hits)
 	g_list_free (hits);
 }
 
+static void
+modest_account_hits_hits_list_free (GList *account_hits_hits_list)
+{
+	GList *iter;
+
+	if (account_hits_hits_list == NULL) {
+		return;
+	}
+
+	for (iter = account_hits_hits_list; iter; iter = iter->next) {
+		ModestGetUnreadMessagesHit *hit = (ModestGetUnreadMessagesHit *) iter->data;
+		g_free (hit->subject);
+		g_slice_free (ModestGetUnreadMessagesHit, hit);
+	}
+
+	g_list_free (account_hits_hits_list);
+}
+
+static void
+modest_account_hits_free (ModestAccountHits *account_hits)
+{
+	g_free (account_hits->account_id);
+	g_free (account_hits->account_name);
+	modest_account_hits_hits_list_free (account_hits->hits);
+	g_slice_free (ModestAccountHits, account_hits);
+}
+
+void
+modest_account_hits_list_free (GList *account_hits_list)
+{
+	GList *iter;
+
+	if (account_hits_list == NULL) {
+		return;
+	}
+
+	for (iter = account_hits_list; iter; iter = iter->next) {
+		modest_account_hits_free ((ModestAccountHits *) iter->data);
+	}
+
+	g_list_free (account_hits_list);
+}
+
 static char *
 _dbus_iter_get_string_or_null (DBusMessageIter *iter)
 {
@@ -590,6 +633,68 @@ out:
 	if (error) {
 		g_warning ("%s: Error during unmarshalling", __FUNCTION__);
 		modest_search_hit_free (hit);
+		hit = NULL;
+	}
+
+	return hit;
+}
+
+static ModestGetUnreadMessagesHit *
+modest_dbus_message_iter_get_unread_messages_hit (DBusMessageIter *parent)
+{
+	ModestGetUnreadMessagesHit *hit;
+	DBusMessageIter  child;
+	dbus_bool_t      res;
+	int              arg_type;
+	gboolean         error;
+
+	error = FALSE;
+
+	arg_type = dbus_message_iter_get_arg_type (parent);
+
+	if (arg_type != 'r') {
+		return NULL;
+	}
+
+	hit = g_slice_new0 (ModestGetUnreadMessagesHit);
+	dbus_message_iter_recurse (parent, &child);
+	
+	/* timestamp  */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_INT64) {
+		error = TRUE;
+		goto out;
+	}
+
+	hit->timestamp = _dbus_iter_get_int64 (&child); 
+
+	res = dbus_message_iter_next (&child);
+	if (res == TRUE) {
+		error = TRUE;
+		goto out;
+	}	
+
+	/* subject  */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_STRING) {
+		error = TRUE;
+		goto out;
+	}
+
+	hit->subject = _dbus_iter_get_string_or_null (&child);
+
+	res = dbus_message_iter_next (&child);
+	if (res == FALSE) {
+		error = TRUE;
+		goto out;
+	}
+
+out:
+	if (error) {
+		g_warning ("%s: Error during unmarshalling", __FUNCTION__);
+		g_slice_free (ModestGetUnreadMessagesHit, hit);
 		hit = NULL;
 	}
 
@@ -823,6 +928,194 @@ libmodest_dbus_client_search (osso_context_t          *osso_ctx,
 
 	dbus_message_unref (msg);
 #endif
+
+	return TRUE;
+}
+
+
+static ModestAccountHits *
+modest_dbus_message_iter_get_account_hits (DBusMessageIter *parent)
+{
+
+	ModestAccountHits *account_hits;
+	int              arg_type;
+	gboolean         error;
+	dbus_bool_t      res;
+	DBusMessageIter  child, traverse;
+
+	error = FALSE;
+	account_hits = g_slice_new0 (ModestAccountHits);
+
+	arg_type = dbus_message_iter_get_arg_type (parent);
+
+	if (arg_type != 'r') {
+		return NULL;
+	}
+
+	dbus_message_iter_recurse (parent, &child);
+	
+	/* accountid  */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_STRING) {
+		error = TRUE;
+		goto out;
+	}
+
+	account_hits->account_id = _dbus_iter_get_string_or_null (&child);
+
+	res = dbus_message_iter_next (&child);
+	if (res == FALSE) {
+		error = TRUE;
+		goto out;
+	}
+
+	/* account name */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_STRING) {
+		error = TRUE;
+		goto out;
+	}
+
+	account_hits->account_name = _dbus_iter_get_string_or_null (&child);
+
+	res = dbus_message_iter_next (&child);
+	if (res == FALSE) {
+		error = TRUE;
+		goto out;
+	}
+
+	/* list of hits  */
+	dbus_message_iter_recurse (&child, &traverse);
+	account_hits->hits = NULL;
+
+	do {
+		ModestGetUnreadMessagesHit *hit;
+
+		hit = modest_dbus_message_iter_get_unread_messages_hit (&traverse);
+		if (hit) {
+			account_hits->hits = g_list_prepend (account_hits->hits, hit);
+		}
+	} while (dbus_message_iter_next (&traverse));
+out:
+	if (error) {
+		g_warning ("%s: Error during unmarshalling", __FUNCTION__);
+		modest_account_hits_free (account_hits);
+		account_hits = NULL;
+	}
+
+	return account_hits;
+}
+
+gboolean
+libmodest_dbus_client_get_unread_messages (osso_context_t          *osso_ctx,
+					   gint msgs_per_account,
+					   GList **account_hits_lists)
+{
+
+	dbus_bool_t res;
+	DBusMessageIter iter;
+	DBusMessageIter child;
+	DBusMessage *reply = NULL;
+	int arg_type;
+
+	DBusConnection *con;
+	DBusMessage *msg;
+	dbus_int32_t msgs_per_account_v;
+	DBusError err;
+	gint timeout;
+
+	if (msgs_per_account < 1) {
+		return FALSE;
+	}
+
+	con = osso_get_dbus_connection (osso_ctx);
+
+	if (con == NULL) {
+		g_warning ("Could not get dbus connection\n");
+		return FALSE;
+
+	}
+
+
+	msg = dbus_message_new_method_call (MODEST_DBUS_SERVICE,
+		MODEST_DBUS_OBJECT,
+		MODEST_DBUS_IFACE,
+		MODEST_DBUS_METHOD_GET_UNREAD_MESSAGES);
+
+	if (msg == NULL) {
+		//ULOG_ERR_F("dbus_message_new_method_call failed");
+		return OSSO_ERROR;
+	}
+
+	msgs_per_account_v = (dbus_int32_t) msgs_per_account;
+
+	res  = dbus_message_append_args (msg,
+					 DBUS_TYPE_INT32, &msgs_per_account,
+					 DBUS_TYPE_INVALID);
+
+	dbus_message_set_auto_start (msg, TRUE);
+
+	timeout = 120000; //milliseconds.
+
+	dbus_error_init (&err);
+	reply = dbus_connection_send_with_reply_and_block (con,
+							   msg, 
+							   timeout,
+							   &err);
+
+	dbus_message_unref (msg);
+
+	if (!reply) {
+		g_warning("%s: dbus_connection_send_with_reply_and_block() error: %s", 
+			__FUNCTION__, err.message);
+		return FALSE;
+	}
+
+	switch (dbus_message_get_type (reply)) {
+
+		case DBUS_MESSAGE_TYPE_ERROR:
+			dbus_set_error_from_message (&err, reply);
+			//XXX to GError?!
+			dbus_error_free (&err);
+			dbus_message_unref (reply);
+			return FALSE;
+
+		case DBUS_MESSAGE_TYPE_METHOD_RETURN:
+			/* ok we are good to go
+			 * lets drop outa here and handle that */
+			break;
+		default:
+			//ULOG_WARN_F("got unknown message type as reply");
+			//retval->type = DBUS_TYPE_STRING;
+			//retval->value.s = g_strdup("Invalid return value");
+			//XXX to GError?! 
+			dbus_message_unref (reply);
+			return FALSE;
+	}
+
+	g_debug ("%s: message return", __FUNCTION__);
+
+	dbus_message_iter_init (reply, &iter);
+	arg_type = dbus_message_iter_get_arg_type (&iter);
+	
+	dbus_message_iter_recurse (&iter, &child);
+	*account_hits_lists = NULL;
+
+	do {
+		ModestAccountHits *account_hits;
+
+		account_hits = modest_dbus_message_iter_get_account_hits (&child);
+
+		if (account_hits) {
+			*account_hits_lists = g_list_prepend (*account_hits_lists, account_hits);	
+		}
+
+	} while (dbus_message_iter_next (&child));
+
+	dbus_message_unref (reply);
+
 
 	return TRUE;
 }

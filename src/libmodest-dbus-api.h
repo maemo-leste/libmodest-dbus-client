@@ -95,6 +95,13 @@ enum ModestDbusDeleteMessageArguments
 
 #define MODEST_DBUS_METHOD_OPEN_EDIT_ACCOUNTS_DIALOG "OpenEditAccountsDialog"
 
+#define MODEST_DBUS_METHOD_GET_UNREAD_MESSAGES "GetUnreadMessages"
+enum ModestDbusGetUnreadMessagesArguments
+{
+	MODEST_DBUS_GET_UNREAD_MESSAGES_ARG_MSGS_PER_ACCOUNT,
+	MODEST_DBUS_GET_UNREAD_MESSAGES_ARGS_COUNT
+};
+
 /*
  * these methods are for debugging only, and should _not_ be
  * exported through libmodest-dbus-client

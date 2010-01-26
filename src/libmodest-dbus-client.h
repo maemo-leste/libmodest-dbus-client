@@ -204,6 +204,7 @@ typedef struct {
 } ModestSearchHit;
 
 
+void modest_account_hits_list_free (GList *account_hits);
 void modest_search_hit_list_free (GList *hits);
 
 
@@ -215,6 +216,24 @@ gboolean libmodest_dbus_client_search            (osso_context_t          *osso_
 						  guint32                  min_size,
 						  ModestDBusSearchFlags    flags,
 						  GList                  **hits);
+
+typedef struct {
+	gchar *subject;
+	time_t timestamp;
+} ModestGetUnreadMessagesHit;
+
+typedef struct {
+	gchar *account_id;
+	gchar *account_name;
+	GList *hits;
+} ModestAccountHits;
+
+/**
+ * this method returns in account_hit_list a list of #ModestAccountHits.
+ */
+gboolean libmodest_dbus_client_get_unread_messages (osso_context_t *osso_ctx,
+						    gint msgs_per_account,
+						    GList **account_hits_list);
 
 gboolean libmodest_dbus_client_delete_message   (osso_context_t   *osso_ctx,
 						 const char       *msg_uri);
