@@ -670,7 +670,7 @@ modest_dbus_message_iter_get_unread_messages_hit (DBusMessageIter *parent)
 	hit->timestamp = _dbus_iter_get_int64 (&child); 
 
 	res = dbus_message_iter_next (&child);
-	if (res == TRUE) {
+	if (res == FALSE) {
 		error = TRUE;
 		goto out;
 	}	
@@ -686,7 +686,7 @@ modest_dbus_message_iter_get_unread_messages_hit (DBusMessageIter *parent)
 	hit->subject = _dbus_iter_get_string_or_null (&child);
 
 	res = dbus_message_iter_next (&child);
-	if (res == FALSE) {
+	if (res == TRUE) {
 		error = TRUE;
 		goto out;
 	}
