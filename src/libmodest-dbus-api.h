@@ -124,4 +124,16 @@ enum ModestDbusUpdateFolderCountsArguments
 	MODEST_DBUS_UPDATE_FOLDER_COUNTS_ARGS_COUNT
 };
 
+/* signal emitted when an account has been created */
+#define MODEST_DBUS_SIGNAL_ACCOUNT_CREATED "account_created"
+
+/* signal emitted when an account has been removed */
+#define MODEST_DBUS_SIGNAL_ACCOUNT_REMOVED "account_removed"
+
+/* signal emitted when a folder is updated */
+#define MODEST_DBUS_SIGNAL_FOLDER_UPDATED "folder_updated"
+
+/* signal emitted when a message read/unread flag is changed */
+#define MODEST_DBUS_SIGNAL_MSG_READ_CHANGED "msg_read_changed"
+
 #endif /* __MODEST_DBUS_API__ */
