@@ -1,3 +1,9 @@
+libmodest-dbus-client (4:3.2.4-0) unstable; urgency=low
+
+  * Now GetUnreadMessages also tells the protocol of each account.
+
+ -- Moises Martinez <moises.martinez@nokia.com>  Thu, 28 Jan 2010 17:47:31 +0100
+
 libmodest-dbus-client (4:3.2.3-0) unstable; urgency=low
 
   * Added GetUnreadMessages signal, that obtains a list of latest unread

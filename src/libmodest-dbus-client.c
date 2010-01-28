@@ -400,6 +400,7 @@ modest_account_hits_free (ModestAccountHits *account_hits)
 {
 	g_free (account_hits->account_id);
 	g_free (account_hits->account_name);
+	g_free (account_hits->store_protocol);
 	modest_account_hits_hits_list_free (account_hits->hits);
 	g_slice_free (ModestAccountHits, account_hits);
 }
@@ -979,6 +980,22 @@ modest_dbus_message_iter_get_account_hits (DBusMessageIter *parent)
 	}
 
 	account_hits->account_name = _dbus_iter_get_string_or_null (&child);
+
+	res = dbus_message_iter_next (&child);
+	if (res == FALSE) {
+		error = TRUE;
+		goto out;
+	}
+
+	/* store protocol */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_STRING) {
+		error = TRUE;
+		goto out;
+	}
+
+	account_hits->store_protocol = _dbus_iter_get_string_or_null (&child);
 
 	res = dbus_message_iter_next (&child);
 	if (res == FALSE) {
