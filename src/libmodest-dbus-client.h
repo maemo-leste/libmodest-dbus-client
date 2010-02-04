@@ -226,6 +226,7 @@ typedef struct {
 	gchar *account_id;
 	gchar *account_name;
 	gchar *store_protocol;
+	gint unread_count;
 	GList *hits;
 } ModestAccountHits;
 

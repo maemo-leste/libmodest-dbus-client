@@ -1003,6 +1003,22 @@ modest_dbus_message_iter_get_account_hits (DBusMessageIter *parent)
 		goto out;
 	}
 
+	/* unread count */
+	arg_type = dbus_message_iter_get_arg_type (&child);
+
+	if (arg_type != DBUS_TYPE_INT64) {
+		error = TRUE;
+		goto out;
+	}
+
+	account_hits->unread_count = _dbus_iter_get_int64 (&child);
+
+	res = dbus_message_iter_next (&child);
+	if (res == FALSE) {
+		error = TRUE;
+		goto out;
+	}
+
 	/* list of hits  */
 	dbus_message_iter_recurse (&child, &traverse);
 	account_hits->hits = NULL;

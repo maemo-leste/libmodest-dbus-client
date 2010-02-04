@@ -26,12 +26,12 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-AC_INIT([libmodestclient],[3.2.4],[http://maemo.org])
+AC_INIT([libmodestclient],[3.2.5],[http://maemo.org])
 AC_CONFIG_HEADERS([config.h])
 
 m4_define([modest_api_major_version], [1])
 m4_define([modest_api_minor_version], [99])
-m4_define([modest_api_micro_version], [5])
+m4_define([modest_api_micro_version], [6])
 m4_define([modest_api_version], [modest_api_major_version.modest_api_minor_version.modest_api_micro_version])
 
 
