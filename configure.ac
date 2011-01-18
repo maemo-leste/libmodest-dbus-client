@@ -98,7 +98,7 @@ fi
 
 # warnings are errors, but don't check format errors, because
 # it breaks with logical ids
-CFLAGS="$CFLAGS -Wno-format-extra-args -Werror"
+CFLAGS="$CFLAGS -Wno-format-extra-args"
 
 serviceentrydir=`$PKG_CONFIG dbus-glib-1 --variable=prefix`/share/dbus-1/services
 
