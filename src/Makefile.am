@@ -32,6 +32,9 @@ INCLUDES=\
 	-I$(top_srcdir)/src \
 	-DPREFIX=\"@prefix@\"
 
+LIBS=\
+	$(MODEST_GSTUFF_LIBS)
+
 lib_LTLIBRARIES = libmodest-dbus-client-1.0.la
 libmodest_dbus_client_1_0_la_SOURCES = libmodest-dbus-api.h libmodest-dbus-client.h libmodest-dbus-client.c
 

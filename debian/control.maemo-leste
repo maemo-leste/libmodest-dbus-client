@@ -1,9 +1,10 @@
 Source: libmodest-dbus-client
 Section: mail
 Priority: optional
-Maintainer: Moises Martinez <moises.martinez@nokia.com>
-Build-Depends: debhelper (>= 4.0.0), cdbs, libdbus-1-dev, libdbus-glib-1-dev, libosso-dev, libglib2.0-dev
-Standards-Version: 3.8.0
+Maintainer: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Build-Depends: debhelper (>= 9), libdbus-1-dev, libdbus-glib-1-dev,
+ libosso-dev, libglib2.0-dev
+Standards-Version: 4.3.0
 
 Package: libmodest-dbus-client
 Section: devel
@@ -19,10 +20,3 @@ Architecture: any
 Depends: libmodest-dbus-client
 Description: library wrapping modest's dbus interface (dev package)
  Development packages for libmodest-dbus-client
-
-Package: libmodest-dbus-client-dbg
-Section: devel
-Architecture: any
-Depends: libmodest-dbus-client (=${Source-Version})
-Description: debug package for modest dbus client
- This package contains the debug symbols for modest dbus client
