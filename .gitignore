@@ -27,3 +27,8 @@
 /stamp-h1
 Makefile
 Makefile.in
+debian/control
+debian/rules
+debian/compat
+debian/libmodest-dbus-client.install
+debian/libmodest-dbus-client-dev.install
